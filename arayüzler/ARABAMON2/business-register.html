@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşletme Kaydı - Arabamon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #0056b3;
+            --accent-color: #ffc107;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .register-section {
+            padding: 5rem 0;
+            background: var(--light-color);
+            min-height: calc(100vh - 80px);
+        }
+        
+        .register-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .register-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .register-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .register-steps {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+        
+        .register-steps::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            padding: 0 2rem;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #adb5bd;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active .step-number {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 0 5px rgba(0, 102, 204, 0.2);
+        }
+        
+        .step.completed .step-number {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .step-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .step.active .step-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .register-form {
+            display: block;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            outline: none;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .form-check-input {
+            margin-top: 0.3rem;
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+        
+        .form-check-label {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #495057;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+        }
+        
+        .btn-prev {
+            background: #e9ecef;
+            color: #495057;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-prev:hover {
+            background: #dee2e6;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0 2rem;
+        }
+        
+        .service-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .service-item:hover {
+            border-color: #ced4da;
+            background: #f8f9fa;
+        }
+        
+        .service-item.selected {
+            border-color: var(--primary-color);
+            background: rgba(0, 102, 204, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 102, 204, 0.1);
+        }
+        
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .service-item.selected .service-icon {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .service-name {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .file-upload {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 150px;
+            border: 2px dashed #ced4da;
+            border-radius: var(--border-radius);
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(0, 102, 204, 0.05);
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-upload-content {
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .file-upload i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .uploaded-files {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .uploaded-file {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: calc(50% - 0.5rem);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-info i {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        
+        .file-name {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        
+        .file-remove {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .file-remove:hover {
+            color: #c82333;
+        }
+        
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .register-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .step {
+                padding: 0 1rem;
+            }
+            
+            .step-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .step-text {
+                font-size: 0.8rem;
+            }
+            
+            .form-actions {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+            
+            .form-actions button {
+                width: 100%;
+            }
+            
+            .uploaded-file {
+                width: 100%;
+            }
+        }
+        
+        /* Form Doğrulama ve Bildirim Stilleri */
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+        }
+        
+        .is-valid {
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1) !important;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* Sallama animasyonu */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+        
+        /* Dosya yükleme iyileştirmeleri */
+        .file-upload.has-preview {
+            height: auto;
+            min-height: 180px;
+            padding: 1rem;
+        }
+        
+        .file-upload.has-preview .file-upload-content {
+            display: none;
+        }
+        
+        .logo-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+        
+        .logo-preview img {
+            max-width: 180px;
+            max-height: 180px;
+            border-radius: 8px;
+            object-fit: contain;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .remove-logo {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #dc3545;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(220,53,69,0.5);
+        }
+        
+        .file-preview {
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
+            border-radius: 4px;
+            margin-right: 0.75rem;
+        }
+        
+        .file-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .uploaded-file.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .uploaded-file.removing {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        
+        /* Bildirim sistemi */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 350px;
+            max-width: 90vw;
+            z-index: 1000;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .notification.info {
+            border-left: 4px solid #0066cc;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-content i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .notification.success i {
+            color: #28a745;
+        }
+        
+        .notification.error i {
+            color: #dc3545;
+        }
+        
+        .notification.info i {
+            color: #0066cc;
+        }
+        
+        .notification-content p {
+            margin: 0;
+            color: #343a40;
+            font-size: 0.95rem;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0 0 0 1rem;
+        }
+        
+        /* Form gönderim yükleniyor */
+        .submit-loading {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 102, 204, 0.1);
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Mobil görünüm iyileştirmeleri */
+        @media (max-width: 768px) {
+            .step-number {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+            
+            .step-text {
+                font-size: 0.75rem;
+            }
+            
+            .register-steps::before {
+                top: 18px;
+            }
+            
+            .notification {
+                width: calc(100% - 40px);
+                bottom: 10px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="index.html">Arabamon</a>
+            </div>
+            <nav>
+                <ul class="navbar-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="businesses.html">İşletmeler</a></li>
+                    <li><a href="services.html">Hizmetler</a></li>
+                    <li><a href="about.html">Hakkımızda</a></li>
+                    <li><a href="contact.html">İletişim</a></li>
+                </ul>
+            </nav>
+            <div class="navbar-right">
+                <a href="user-panel.html" class="btn btn-sm">Kullanıcı Panel</a>
+                <a href="business-panel.html" class="btn btn-sm">İşletme Panel</a>
+                <a href="admin-panel.html" class="btn btn-primary btn-sm">Admin Panel</a>
+                <a href="login.html" class="btn btn-sm">Giriş Yap</a>
+                <div class="dropdown">
+                    <a href="#" class="btn btn-secondary btn-sm dropdown-toggle">Kayıt Ol</a>
+                    <div class="dropdown-menu">
+                        <a href="register.html" class="dropdown-item"><i class="fas fa-user"></i> Kullanıcı Kaydı</a>
+                        <a href="business-register.html" class="dropdown-item"><i class="fas fa-store"></i> Firma Kaydı</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- İşletme Kayıt Formu -->
+    <section class="register-section">
+        <div class="register-container">
+            <div class="register-header">
+                <h1>İşletmenizi Arabamon'a Kaydedin</h1>
+                <p>Binlerce potansiyel müşteriye ulaşın, işletmenizin bilinirliğini artırın ve online randevu sistemi ile işlerinizi kolaylaştırın.</p>
+            </div>
+            
+            <div class="register-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-text">İşletme Bilgileri</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Hizmetler</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Fotoğraflar</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-text">İletişim</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" style="width: 25%;"></div>
+            </div>
+            
+            <form id="business-register-form" class="register-form">
+                <!-- Adım 1: İşletme Bilgileri -->
+                <div class="form-step active" data-step="1">
+                    <h3>İşletme Bilgileri</h3>
+                    <p>İşletmenizle ilgili temel bilgileri girin.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="business-name">İşletme Adı*</label>
+                            <input type="text" id="business-name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="business-type">İşletme Türü*</label>
+                            <select id="business-type" class="form-control" required>
+                                <option value="">Seçiniz</option>
+                                <option value="aracyikama">Araç Yıkama</option>
+                                <option value="lastikdegisim">Lastik Değişim</option>
+                                <option value="ekspertiz">Ekspertiz</option>
+                                <option value="otopark">Otopark</option>
+                                <option value="elektrik">Elektrik/Elektronik</option>
+                                <option value="akuservis">Akü Servisi</option>
+                                <option value="other">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="business-description">İşletme Açıklaması*</label>
+                        <textarea id="business-description" class="form-control" rows="4" required></textarea>
+                        <small class="text-muted">İşletmenizin öne çıkan özellikleri ve müşterilere sağladığı avantajlar hakkında kısa bir açıklama yazın.</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="business-address">Adres*</label>
+                            <input type="text" id="business-address" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="business-city">Şehir*</label>
+                            <select id="business-city" class="form-control" required>
+                                <option value="">Seçiniz</option>
+                                <option value="istanbul">İstanbul</option>
+                                <option value="ankara">Ankara</option>
+                                <option value="izmir">İzmir</option>
+                                <option value="bursa">Bursa</option>
+                                <option value="antalya">Antalya</option>
+                                <!-- Diğer şehirler... -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="business-district">İlçe*</label>
+                            <input type="text" id="business-district" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <div></div>
+                        <button type="button" class="btn btn-primary btn-lg next-step">Devam Et</button>
+                    </div>
+                </div>
+                
+                <!-- Adım 2: Hizmetler -->
+                <div class="form-step" data-step="2">
+                    <h3>Hizmetler</h3>
+                    <p>İşletmenizin sunduğu hizmetleri seçin.</p>
+                    
+                    <h4>Sunduğunuz Hizmetler</h4>
+                    <div class="services-grid">
+                        <div class="service-item" data-service="iç-yıkama">
+                            <div class="service-icon"><i class="fas fa-car"></i></div>
+                            <div class="service-name">İç Yıkama</div>
+                        </div>
+                        <div class="service-item" data-service="dış-yıkama">
+                            <div class="service-icon"><i class="fas fa-car-wash"></i></div>
+                            <div class="service-name">Dış Yıkama</div>
+                        </div>
+                        <div class="service-item" data-service="detaylı-yıkama">
+                            <div class="service-icon"><i class="fas fa-spray-can"></i></div>
+                            <div class="service-name">Detaylı Yıkama</div>
+                        </div>
+                        <div class="service-item" data-service="lastik-değişimi">
+                            <div class="service-icon"><i class="fas fa-tire"></i></div>
+                            <div class="service-name">Lastik Değişimi</div>
+                        </div>
+                        <div class="service-item" data-service="balans-ayarı">
+                            <div class="service-icon"><i class="fas fa-cog"></i></div>
+                            <div class="service-name">Balans Ayarı</div>
+                        </div>
+                        <div class="service-item" data-service="rot-ayarı">
+                            <div class="service-icon"><i class="fas fa-wrench"></i></div>
+                            <div class="service-name">Rot Ayarı</div>
+                        </div>
+                        <div class="service-item" data-service="ekspertiz">
+                            <div class="service-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="service-name">Ekspertiz</div>
+                        </div>
+                        <div class="service-item" data-service="otopark">
+                            <div class="service-icon"><i class="fas fa-parking"></i></div>
+                            <div class="service-name">Otopark</div>
+                        </div>
+                        <div class="service-item" data-service="akü-değişimi">
+                            <div class="service-icon"><i class="fas fa-car-battery"></i></div>
+                            <div class="service-name">Akü Değişimi</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="additional-services">Diğer Hizmetler</label>
+                        <textarea id="additional-services" class="form-control" rows="2" placeholder="Yukarıda listelenmemiş olan hizmetlerinizi virgülle ayırarak yazabilirsiniz."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev btn-lg prev-step">Geri</button>
+                        <button type="button" class="btn btn-primary btn-lg next-step">Devam Et</button>
+                    </div>
+                </div>
+                
+                <!-- Adım 3: Fotoğraflar -->
+                <div class="form-step" data-step="3">
+                    <h3>Fotoğraflar</h3>
+                    <p>İşletmenize ait fotoğrafları yükleyin. Görsel içerikler potansiyel müşterilerin ilgisini çekmede önemli rol oynar.</p>
+                    
+                    <div class="form-group">
+                        <label>İşletme Fotoğrafları</label>
+                        <div class="file-upload">
+                            <input type="file" id="business-photos" multiple accept="image/*">
+                            <div class="file-upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Dosyaları buraya sürükleyin veya <strong>Gözat</strong> butonuna tıklayın</p>
+                                <small>PNG, JPG veya JPEG formatında max. 5MB</small>
+                            </div>
+                        </div>
+                        <div class="uploaded-files">
+                            <!-- Örnek yüklenen dosyalar -->
+                            <div class="uploaded-file">
+                                <div class="file-info">
+                                    <i class="fas fa-image"></i>
+                                    <span class="file-name">işletme-dış-görünüm.jpg</span>
+                                </div>
+                                <button type="button" class="file-remove"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="uploaded-file">
+                                <div class="file-info">
+                                    <i class="fas fa-image"></i>
+                                    <span class="file-name">işletme-iç-görünüm.jpg</span>
+                                </div>
+                                <button type="button" class="file-remove"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Logo (İsteğe Bağlı)</label>
+                        <div class="file-upload">
+                            <input type="file" id="business-logo" accept="image/*">
+                            <div class="file-upload-content">
+                                <i class="fas fa-image"></i>
+                                <p>İşletme logonuzu yükleyin</p>
+                                <small>PNG veya JPEG formatında max. 2MB</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev btn-lg prev-step">Geri</button>
+                        <button type="button" class="btn btn-primary btn-lg next-step">Devam Et</button>
+                    </div>
+                </div>
+                
+                <!-- Adım 4: İletişim -->
+                <div class="form-step" data-step="4">
+                    <h3>İletişim Bilgileri</h3>
+                    <p>Müşterilerin sizinle iletişime geçebilmesi için gerekli bilgileri girin.</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-name">İletişim Kişisi*</label>
+                            <input type="text" id="contact-name" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-email">E-posta*</label>
+                            <input type="email" id="contact-email" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-phone">Telefon*</label>
+                            <input type="tel" id="contact-phone" class="form-control" placeholder="0555 123 4567" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-website">Web Sitesi (İsteğe Bağlı)</label>
+                            <input type="url" id="contact-website" class="form-control" placeholder="https://www.example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Çalışma Saatleri*</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label for="opening-days" class="form-label">Günler</label>
+                                    <select id="opening-days" class="form-control" required>
+                                        <option value="weekdays">Hafta İçi</option>
+                                        <option value="everyday">Her Gün</option>
+                                        <option value="custom">Özel</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="opening-time" class="form-label">Açılış</label>
+                                    <input type="time" id="opening-time" class="form-control" required>
+                                </div>
+                                <div>
+                                    <label for="closing-time" class="form-label">Kapanış</label>
+                                    <input type="time" id="closing-time" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="checkbox" id="terms-agree" class="form-check-input" required>
+                            <label for="terms-agree" class="form-check-label">
+                                <a href="#" target="_blank">Kullanım Şartları</a>'nı ve <a href="#" target="_blank">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" id="marketing-agree" class="form-check-input">
+                        <label for="marketing-agree" class="form-check-label">
+                            Arabamon'dan kampanya, duyuru ve fırsatlar hakkında e-posta almak istiyorum.
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-prev btn-lg prev-step">Geri</button>
+                        <button type="submit" class="btn btn-primary btn-lg">Kaydı Tamamla</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Aracınız için en yakın ve en kaliteli hizmet noktalarını bulun, anında randevu alın.</p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="businesses.html">İşletmeler</a></li>
+                        <li><a href="services.html">Hizmetler</a></li>
+                        <li><a href="about.html">Hakkımızda</a></li>
+                        <li><a href="contact.html">İletişim</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hizmetler</h3>
+                    <ul>
+                        <li><a href="businesses.html?category=aracyikama">Araç Yıkama</a></li>
+                        <li><a href="businesses.html?category=lastikdegisim">Lastik Değişimi</a></li>
+                        <li><a href="businesses.html?category=ekspertiz">Ekspertiz</a></li>
+                        <li><a href="businesses.html?category=otopark">Otopark</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> İstanbul, Türkiye</li>
+                        <li><i class="fas fa-phone"></i> +90 (212) 123 45 67</li>
+                        <li><i class="fas fa-envelope"></i> info@arabamon.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- API JS -->
+    <script src="js/api.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form adımları arasında geçiş işlevi
+            const steps = document.querySelectorAll('.step');
+            const formSteps = document.querySelectorAll('.form-step');
+            const nextButtons = document.querySelectorAll('.next-step');
+            const prevButtons = document.querySelectorAll('.prev-step');
+            const progressBar = document.querySelector('.progress');
+            const form = document.getElementById('business-register-form');
+            
+            // Form alanları
+            const businessName = document.getElementById('business-name');
+            const businessType = document.getElementById('business-type');
+            const businessDescription = document.getElementById('business-description');
+            const businessAddress = document.getElementById('business-address');
+            const businessCity = document.getElementById('business-city');
+            const businessDistrict = document.getElementById('business-district');
+            const contactName = document.getElementById('contact-name');
+            const contactEmail = document.getElementById('contact-email');
+            const contactPhone = document.getElementById('contact-phone');
+            const termsAgree = document.getElementById('terms-agree');
+            
+            // Form verilerini localStorage'a kaydetme
+            const saveFormData = () => {
+                const formData = {
+                    businessName: businessName.value,
+                    businessType: businessType.value,
+                    businessDescription: businessDescription.value,
+                    businessAddress: businessAddress.value,
+                    businessCity: businessCity.value,
+                    businessDistrict: businessDistrict.value,
+                    additionalServices: document.getElementById('additional-services').value,
+                    contactName: contactName.value,
+                    contactEmail: contactEmail.value,
+                    contactPhone: contactPhone.value,
+                    contactWebsite: document.getElementById('contact-website').value,
+                    openingDays: document.getElementById('opening-days').value,
+                    openingTime: document.getElementById('opening-time').value,
+                    closingTime: document.getElementById('closing-time').value,
+                    marketingAgree: document.getElementById('marketing-agree').checked,
+                    currentStep: document.querySelector('.step.active').getAttribute('data-step')
+                };
+                
+                localStorage.setItem('businessRegisterFormData', JSON.stringify(formData));
+            };
+            
+            // Kayıtlı form verilerini yükleme
+            const loadFormData = () => {
+                const savedData = localStorage.getItem('businessRegisterFormData');
+                
+                if (savedData) {
+                    const formData = JSON.parse(savedData);
+                    
+                    businessName.value = formData.businessName || '';
+                    businessType.value = formData.businessType || '';
+                    businessDescription.value = formData.businessDescription || '';
+                    businessAddress.value = formData.businessAddress || '';
+                    businessCity.value = formData.businessCity || '';
+                    businessDistrict.value = formData.businessDistrict || '';
+                    document.getElementById('additional-services').value = formData.additionalServices || '';
+                    contactName.value = formData.contactName || '';
+                    contactEmail.value = formData.contactEmail || '';
+                    contactPhone.value = formData.contactPhone || '';
+                    document.getElementById('contact-website').value = formData.contactWebsite || '';
+                    document.getElementById('opening-days').value = formData.openingDays || 'weekdays';
+                    document.getElementById('opening-time').value = formData.openingTime || '';
+                    document.getElementById('closing-time').value = formData.closingTime || '';
+                    document.getElementById('marketing-agree').checked = formData.marketingAgree || false;
+                    
+                    // Kaydedilen adıma git
+                    if (formData.currentStep && formData.currentStep > 1) {
+                        goToStep(parseInt(formData.currentStep));
+                    }
+                }
+            };
+            
+            // Form alanlarının değişikliklerini izle ve kaydet
+            const formInputs = form.querySelectorAll('input, textarea, select');
+            formInputs.forEach(input => {
+                input.addEventListener('change', saveFormData);
+                input.addEventListener('blur', validateField);
+            });
+            
+            // Gerçek zamanlı form doğrulama
+            function validateField(e) {
+                const field = e.target;
+                const fieldName = field.id;
+                const fieldValue = field.value.trim();
+                let isValid = true;
+                let errorMessage = '';
+                
+                // Mevcut hata mesajını temizle
+                const existingError = field.parentElement.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Alan bazlı doğrulama kuralları
+                switch(fieldName) {
+                    case 'business-name':
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'İşletme adı boş bırakılamaz';
+                        } else if (fieldValue.length < 3) {
+                            isValid = false;
+                            errorMessage = 'İşletme adı en az 3 karakter olmalıdır';
+                        }
+                        break;
+                        
+                    case 'contact-email':
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'E-posta adresi boş bırakılamaz';
+                        } else if (!emailRegex.test(fieldValue)) {
+                            isValid = false;
+                            errorMessage = 'Geçerli bir e-posta adresi giriniz';
+                        }
+                        break;
+                        
+                    case 'contact-phone':
+                        const phoneRegex = /^(05|5)[0-9]{9}$/;
+                        const cleanPhone = fieldValue.replace(/\D/g, '');
+                        
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'Telefon numarası boş bırakılamaz';
+                        } else if (!phoneRegex.test(cleanPhone)) {
+                            isValid = false;
+                            errorMessage = 'Geçerli bir telefon numarası giriniz (05XX XXX XXXX)';
+                        }
+                        break;
+                        
+                    case 'business-description':
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'İşletme açıklaması boş bırakılamaz';
+                        } else if (fieldValue.length < 20) {
+                            isValid = false;
+                            errorMessage = 'Açıklama en az 20 karakter olmalıdır';
+                        }
+                        break;
+                        
+                    case 'business-address':
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'Adres boş bırakılamaz';
+                        } else if (fieldValue.length < 10) {
+                            isValid = false;
+                            errorMessage = 'Lütfen tam adres giriniz';
+                        }
+                        break;
+                        
+                    case 'business-city':
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'Şehir seçiniz';
+                        }
+                        break;
+                        
+                    case 'business-district':
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'İlçe boş bırakılamaz';
+                        }
+                        break;
+                        
+                    case 'contact-name':
+                        if (!fieldValue) {
+                            isValid = false;
+                            errorMessage = 'İletişim kişisi boş bırakılamaz';
+                        } else if (fieldValue.length < 5) {
+                            isValid = false;
+                            errorMessage = 'Ad ve soyad giriniz';
+                        }
+                        break;
+                        
+                    case 'contact-website':
+                        if (fieldValue && !fieldValue.startsWith('http')) {
+                            isValid = false;
+                            errorMessage = 'Web adresi http:// veya https:// ile başlamalıdır';
+                        }
+                        break;
+                }
+                
+                // Hata varsa göster
+                if (!isValid) {
+                    field.classList.add('is-invalid');
+                    
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message';
+                    errorDiv.textContent = errorMessage;
+                    
+                    field.parentElement.appendChild(errorDiv);
+                } else {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+                
+                return isValid;
+            }
+            
+            // Belirli bir adıma gitme
+            function goToStep(stepNumber) {
+                // Mevcut aktif adımı ve formu bul
+                const activeStep = document.querySelector('.step.active');
+                const activeFormStep = document.querySelector('.form-step.active');
+                const currentStep = parseInt(activeStep.getAttribute('data-step'));
+                
+                // Tüm adımların aktif sınıflarını kaldır
+                steps.forEach(step => {
+                    step.classList.remove('active', 'completed');
+                });
+                
+                formSteps.forEach(formStep => {
+                    formStep.classList.remove('active');
+                });
+                
+                // Geçilen adımları tamamlandı olarak işaretle
+                for (let i = 1; i < stepNumber; i++) {
+                    document.querySelector(`.step[data-step="${i}"]`).classList.add('completed');
+                }
+                
+                // Hedef adımı aktif et
+                document.querySelector(`.step[data-step="${stepNumber}"]`).classList.add('active');
+                document.querySelector(`.form-step[data-step="${stepNumber}"]`).classList.add('active');
+                
+                // İlerleme çubuğunu güncelle
+                const progress = (stepNumber - 1) * (100/3); 
+                progressBar.style.width = `${progress}%`;
+                
+                // Sayfa başına kaydır
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+            
+            // Adımın doğrulanması
+            function validateStep(stepNumber) {
+                const fields = document.querySelector(`.form-step[data-step="${stepNumber}"]`)
+                    .querySelectorAll('input[required], select[required], textarea[required]');
+                
+                let isStepValid = true;
+                
+                fields.forEach(field => {
+                    const event = new Event('blur');
+                    field.dispatchEvent(event);
+                    
+                    if (field.classList.contains('is-invalid')) {
+                        isStepValid = false;
+                    }
+                });
+                
+                return isStepValid;
+            }
+            
+            // Sonraki adıma geçiş
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Mevcut aktif adımı bul
+                    const activeStep = document.querySelector('.step.active');
+                    const currentStep = parseInt(activeStep.getAttribute('data-step'));
+                    
+                    // Mevcut adımı doğrula
+                    if (validateStep(currentStep)) {
+                        // Sonraki adım
+                        const nextStep = currentStep + 1;
+                        goToStep(nextStep);
+                        
+                        // Form verilerini kaydet
+                        saveFormData();
+                    } else {
+                        // Hata bildirimi
+                        const errorFields = document.querySelectorAll('.form-step.active .is-invalid');
+                        if (errorFields.length > 0) {
+                            errorFields[0].focus();
+                            
+                            // Hafif sallama animasyonu ekle
+                            errorFields.forEach(field => {
+                                field.classList.add('shake');
+                                setTimeout(() => {
+                                    field.classList.remove('shake');
+                                }, 600);
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Önceki adıma dönüş
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Mevcut aktif adımı bul
+                    const activeStep = document.querySelector('.step.active');
+                    const currentStep = parseInt(activeStep.getAttribute('data-step'));
+                    const prevStep = currentStep - 1;
+                    
+                    // Önceki adıma git
+                    goToStep(prevStep);
+                    
+                    // Form verilerini kaydet
+                    saveFormData();
+                });
+            });
+            
+            // Hizmet seçimi
+            const serviceItems = document.querySelectorAll('.service-item');
+            const selectedServices = new Set();
+            
+            serviceItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    const service = this.getAttribute('data-service');
+                    
+                    if (this.classList.contains('selected')) {
+                        selectedServices.add(service);
+                    } else {
+                        selectedServices.delete(service);
+                    }
+                    
+                    // Seçili hizmetleri localStorage'a kaydet
+                    localStorage.setItem('selectedServices', JSON.stringify(Array.from(selectedServices)));
+                });
+            });
+            
+            // Kayıtlı hizmetleri yükle
+            const loadSelectedServices = () => {
+                const savedServices = localStorage.getItem('selectedServices');
+                
+                if (savedServices) {
+                    const services = JSON.parse(savedServices);
+                    
+                    services.forEach(service => {
+                        const serviceItem = document.querySelector(`.service-item[data-service="${service}"]`);
+                        if (serviceItem) {
+                            serviceItem.classList.add('selected');
+                            selectedServices.add(service);
+                        }
+                    });
+                }
+            };
+            
+            // Dosya yükleme işlevi ve önizleme
+            const fileUpload = document.getElementById('business-photos');
+            const uploadedFiles = document.querySelector('.uploaded-files');
+            
+            fileUpload.addEventListener('change', function(e) {
+                const files = e.target.files;
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    // Dosya tipi kontrolü
+                    if (!file.type.match('image.*')) {
+                        showNotification('Lütfen sadece resim dosyası yükleyin!', 'error');
+                        continue;
+                    }
+                    
+                    // Dosya boyutu kontrolü (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showNotification('Dosya boyutu 5MB\'dan büyük olamaz!', 'error');
+                        continue;
+                    }
+                    
+                    // Dosya önizleme ve gösterimi
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const fileDiv = document.createElement('div');
+                        fileDiv.className = 'uploaded-file';
+                        fileDiv.innerHTML = `
+                            <div class="file-preview">
+                                <img src="${e.target.result}" alt="${file.name}" class="file-thumbnail">
+                            </div>
+                            <div class="file-info">
+                                <i class="fas fa-image"></i>
+                                <span class="file-name">${file.name}</span>
+                            </div>
+                            <button type="button" class="file-remove"><i class="fas fa-times"></i></button>
+                        `;
+                        
+                        uploadedFiles.appendChild(fileDiv);
+                        
+                        // Ekleme animasyonu
+                        setTimeout(() => {
+                            fileDiv.classList.add('show');
+                        }, 10);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Logo yükleme önizlemesi
+            const logoUpload = document.getElementById('business-logo');
+            const logoContainer = logoUpload.closest('.file-upload');
+            
+            logoUpload.addEventListener('change', function(e) {
+                const file = this.files[0];
+                
+                if (!file) return;
+                
+                // Dosya tipi kontrolü
+                if (!file.type.match('image.*')) {
+                    showNotification('Lütfen sadece resim dosyası yükleyin!', 'error');
+                    return;
+                }
+                
+                // Dosya boyutu kontrolü (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Logo dosyası 2MB\'dan büyük olamaz!', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Mevcut önizlemeyi kaldır
+                    const existingPreview = logoContainer.querySelector('.logo-preview');
+                    if (existingPreview) {
+                        existingPreview.remove();
+                    }
+                    
+                    // Önizleme ekle
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'logo-preview';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Logo Önizleme">
+                        <button type="button" class="remove-logo"><i class="fas fa-times"></i></button>
+                    `;
+                    
+                    logoContainer.appendChild(previewDiv);
+                    logoContainer.classList.add('has-preview');
+                    
+                    // Logo kaldırma butonu
+                    previewDiv.querySelector('.remove-logo').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        previewDiv.remove();
+                        logoUpload.value = '';
+                        logoContainer.classList.remove('has-preview');
+                    });
+                };
+                
+                reader.readAsDataURL(file);
+            });
+            
+            // Dinamik olarak eklenen silme butonlarına olay dinleyicileri
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.file-remove')) {
+                    const fileDiv = e.target.closest('.uploaded-file');
+                    
+                    // Silme animasyonu
+                    fileDiv.classList.remove('show');
+                    fileDiv.classList.add('removing');
+                    
+                    setTimeout(() => {
+                        fileDiv.remove();
+                    }, 300);
+                }
+            });
+            
+            // Form gönderimi
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mevcut adımı doğrula
+                const activeStep = document.querySelector('.step.active');
+                const currentStep = parseInt(activeStep.getAttribute('data-step'));
+                
+                if (!validateStep(currentStep)) {
+                    // Hata bildirimi
+                    const errorFields = document.querySelectorAll('.form-step.active .is-invalid');
+                    if (errorFields.length > 0) {
+                        errorFields[0].focus();
+                    }
+                    return;
+                }
+                
+                // Kullanım şartları kontrolü
+                if (!termsAgree.checked) {
+                    showNotification('Devam etmek için kullanım şartlarını kabul etmelisiniz.', 'error');
+                    return;
+                }
+                
+                // Form verilerini topla
+                const formData = new FormData(form);
+                
+                // Seçili hizmetleri ekle
+                formData.append('selectedServices', JSON.stringify(Array.from(selectedServices)));
+                
+                // Gönderim loading göstergesi
+                document.querySelector('.form-actions').innerHTML = `
+                    <div class="submit-loading">
+                        <div class="spinner"></div>
+                        <p>Kaydınız işleniyor, lütfen bekleyiniz...</p>
+                    </div>
+                `;
+                
+                // API endpoint'e gönderim simülasyonu
+                setTimeout(() => {
+                    showNotification('Kayıt işleminiz alınmıştır. Bilgileriniz incelendikten sonra işletmeniz Arabamon\'da yayınlanacaktır.', 'success');
+                    
+                    // Form verilerini temizle
+                    localStorage.removeItem('businessRegisterFormData');
+                    localStorage.removeItem('selectedServices');
+                    
+                    // Başarılı kayıttan sonra ana sayfaya yönlendirme
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }, 2000);
+            });
+            
+            // Bildirim gösterme
+            function showNotification(message, type = 'info') {
+                // Mevcut bildirimleri kaldır
+                const existingNotifications = document.querySelectorAll('.notification');
+                existingNotifications.forEach(notification => {
+                    notification.remove();
+                });
+                
+                // Yeni bildirim oluştur
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                        <p>${message}</p>
+                    </div>
+                    <button class="notification-close"><i class="fas fa-times"></i></button>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Animasyon
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Otomatik kapanma
+                const autoClose = setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 5000);
+                
+                // Kapatma butonu
+                notification.querySelector('.notification-close').addEventListener('click', () => {
+                    clearTimeout(autoClose);
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                });
+            }
+            
+            // Sayfa yüklendiğinde kayıtlı verileri yükle
+            loadFormData();
+            loadSelectedServices();
+        });
+    </script>
+</body>
+</html> 

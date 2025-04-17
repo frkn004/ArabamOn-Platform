@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşletmeler - Arabamon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .businesses-hero {
+            background: linear-gradient(135deg, var(--primary-color), #0055aa);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .businesses-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .businesses-hero p {
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .filters-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .filters-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .filters-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+        
+        .business-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .business-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .business-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .business-card-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .business-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .business-type {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            color: white;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .business-card-content {
+            padding: 1.5rem;
+        }
+        
+        .business-card-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .business-rating {
+            color: #ffc107;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .business-rating span {
+            margin-left: 0.5rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .business-location {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-service {
+            background: #f1f3f5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #495057;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .pagination .page-item {
+            margin: 0 0.25rem;
+        }
+        
+        .pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid #dee2e6;
+        }
+        
+        .pagination .page-link:hover {
+            background: #e9ecef;
+        }
+        
+        .pagination .active .page-link {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .no-results p {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="index.html">Arabamon</a>
+            </div>
+            <nav>
+                <ul class="navbar-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="businesses.html" class="active">İşletmeler</a></li>
+                    <li><a href="services.html">Hizmetler</a></li>
+                    <li><a href="about.html">Hakkımızda</a></li>
+                    <li><a href="contact.html">İletişim</a></li>
+                </ul>
+            </nav>
+            <div class="navbar-right">
+                <a href="login.html" class="btn btn-sm">Giriş Yap</a>
+                <a href="register.html" class="btn btn-secondary btn-sm">Kayıt Ol</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="businesses-hero">
+        <div class="container">
+            <h1>Araç Bakım İşletmeleri</h1>
+            <p>Size en yakın ve en iyi hizmet veren işletmeleri keşfedin</p>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters">
+        <div class="container">
+            <div class="filters-container">
+                <form class="filters-form" id="filters-form">
+                    <div class="form-group">
+                        <label for="service-type">Hizmet Türü</label>
+                        <select id="service-type" class="form-control">
+                            <option value="">Tümü</option>
+                            <option value="aracyikama">Araç Yıkama</option>
+                            <option value="lastikdegisim">Lastik Değişim</option>
+                            <option value="ekspertiz">Ekspertiz</option>
+                            <option value="otopark">Otopark</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Konum</label>
+                        <select id="location" class="form-control">
+                            <option value="">Tümü</option>
+                            <option value="istanbul">İstanbul</option>
+                            <option value="ankara">Ankara</option>
+                            <option value="izmir">İzmir</option>
+                            <option value="bursa">Bursa</option>
+                            <option value="antalya">Antalya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Minimum Puanlama</label>
+                        <select id="rating" class="form-control">
+                            <option value="">Tümü</option>
+                            <option value="5">5 Yıldız</option>
+                            <option value="4">4+ Yıldız</option>
+                            <option value="3">3+ Yıldız</option>
+                            <option value="2">2+ Yıldız</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="search">Arama</label>
+                        <input type="text" id="search" class="form-control" placeholder="İşletme adı ara...">
+                    </div>
+                </form>
+                <div class="filters-buttons">
+                    <button type="button" id="filter-button" class="btn btn-primary">Filtrele</button>
+                    <button type="button" id="clear-filters" class="btn btn-light">Filtreleri Temizle</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Businesses List -->
+    <section class="businesses-section">
+        <div class="container">
+            <div class="business-list" id="business-list">
+                <!-- İşletme Kartı 1 -->
+                <div class="business-card fade-in">
+                    <div class="business-card-image">
+                        <img src="images/business1.jpg" alt="Lüks Oto Yıkama">
+                        <span class="business-type aracyikama">Araç Yıkama</span>
+                    </div>
+                    <div class="business-card-content">
+                        <h3>Lüks Oto Yıkama</h3>
+                        <div class="business-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>4.5/5 (128 değerlendirme)</span>
+                        </div>
+                        <div class="business-location">
+                            <i class="fas fa-map-marker-alt"></i> İstanbul, Kadıköy
+                        </div>
+                        <div class="business-services">
+                            <span class="business-service">İç Temizlik</span>
+                            <span class="business-service">Dış Yıkama</span>
+                            <span class="business-service">Motor Temizliği</span>
+                        </div>
+                        <a href="business.html?id=1" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+
+                <!-- İşletme Kartı 2 -->
+                <div class="business-card fade-in">
+                    <div class="business-card-image">
+                        <img src="images/business2.jpg" alt="Hızlı Lastik">
+                        <span class="business-type lastikdegisim">Lastik Değişim</span>
+                    </div>
+                    <div class="business-card-content">
+                        <h3>Hızlı Lastik</h3>
+                        <div class="business-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>4.0/5 (95 değerlendirme)</span>
+                        </div>
+                        <div class="business-location">
+                            <i class="fas fa-map-marker-alt"></i> Ankara, Çankaya
+                        </div>
+                        <div class="business-services">
+                            <span class="business-service">Lastik Değişimi</span>
+                            <span class="business-service">Balans Ayarı</span>
+                            <span class="business-service">Rot Ayarı</span>
+                        </div>
+                        <a href="business.html?id=2" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+
+                <!-- İşletme Kartı 3 -->
+                <div class="business-card fade-in">
+                    <div class="business-card-image">
+                        <img src="images/business3.jpg" alt="Pro Ekspertiz">
+                        <span class="business-type ekspertiz">Ekspertiz</span>
+                    </div>
+                    <div class="business-card-content">
+                        <h3>Pro Ekspertiz</h3>
+                        <div class="business-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>5.0/5 (64 değerlendirme)</span>
+                        </div>
+                        <div class="business-location">
+                            <i class="fas fa-map-marker-alt"></i> İzmir, Konak
+                        </div>
+                        <div class="business-services">
+                            <span class="business-service">Detaylı Ekspertiz</span>
+                            <span class="business-service">Hasar Tespiti</span>
+                            <span class="business-service">İkinci El Değerleme</span>
+                        </div>
+                        <a href="business.html?id=3" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+
+                <!-- İşletme Kartı 4 -->
+                <div class="business-card fade-in">
+                    <div class="business-card-image">
+                        <img src="images/business1.jpg" alt="Elit Otopark">
+                        <span class="business-type otopark">Otopark</span>
+                    </div>
+                    <div class="business-card-content">
+                        <h3>Elit Otopark</h3>
+                        <div class="business-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>4.0/5 (42 değerlendirme)</span>
+                        </div>
+                        <div class="business-location">
+                            <i class="fas fa-map-marker-alt"></i> Antalya, Merkez
+                        </div>
+                        <div class="business-services">
+                            <span class="business-service">Kapalı Otopark</span>
+                            <span class="business-service">7/24 Güvenlik</span>
+                            <span class="business-service">Aylık Abonelik</span>
+                        </div>
+                        <a href="business.html?id=4" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+
+                <!-- İşletme Kartı 5 -->
+                <div class="business-card fade-in">
+                    <div class="business-card-image">
+                        <img src="images/business2.jpg" alt="Hızlı Yıkama">
+                        <span class="business-type aracyikama">Araç Yıkama</span>
+                    </div>
+                    <div class="business-card-content">
+                        <h3>Hızlı Yıkama</h3>
+                        <div class="business-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>3.0/5 (78 değerlendirme)</span>
+                        </div>
+                        <div class="business-location">
+                            <i class="fas fa-map-marker-alt"></i> İstanbul, Şişli
+                        </div>
+                        <div class="business-services">
+                            <span class="business-service">Hızlı Yıkama</span>
+                            <span class="business-service">İç Temizlik</span>
+                            <span class="business-service">Cilalama</span>
+                        </div>
+                        <a href="business.html?id=5" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+
+                <!-- İşletme Kartı 6 -->
+                <div class="business-card fade-in">
+                    <div class="business-card-image">
+                        <img src="images/business3.jpg" alt="Lastik Dünyası">
+                        <span class="business-type lastikdegisim">Lastik Değişim</span>
+                    </div>
+                    <div class="business-card-content">
+                        <h3>Lastik Dünyası</h3>
+                        <div class="business-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>4.5/5 (112 değerlendirme)</span>
+                        </div>
+                        <div class="business-location">
+                            <i class="fas fa-map-marker-alt"></i> Bursa, Osmangazi
+                        </div>
+                        <div class="business-services">
+                            <span class="business-service">Lastik Satışı</span>
+                            <span class="business-service">Lastik Değişimi</span>
+                            <span class="business-service">Balans Ayarı</span>
+                        </div>
+                        <a href="business.html?id=6" class="btn btn-primary">Detaylar</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="page-item active">
+                    <a href="#" class="page-link">1</a>
+                </div>
+                <div class="page-item">
+                    <a href="#" class="page-link">2</a>
+                </div>
+                <div class="page-item">
+                    <a href="#" class="page-link">3</a>
+                </div>
+                <div class="page-item">
+                    <a href="#" class="page-link"><i class="fas fa-angle-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Aracınız için en yakın ve en kaliteli hizmet noktalarını bulun, anında randevu alın.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="businesses.html">İşletmeler</a></li>
+                        <li><a href="services.html">Hizmetler</a></li>
+                        <li><a href="about.html">Hakkımızda</a></li>
+                        <li><a href="contact.html">İletişim</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hizmetler</h3>
+                    <ul>
+                        <li><a href="businesses.html?category=aracyikama">Araç Yıkama</a></li>
+                        <li><a href="businesses.html?category=lastikdegisim">Lastik Değişimi</a></li>
+                        <li><a href="businesses.html?category=ekspertiz">Ekspertiz</a></li>
+                        <li><a href="businesses.html?category=otopark">Otopark</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> İstanbul, Türkiye</li>
+                        <li><i class="fas fa-phone"></i> +90 (212) 123 45 67</li>
+                        <li><i class="fas fa-envelope"></i> info@arabamon.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- API JS -->
+    <script src="js/api.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL'den query parametrelerini al
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            
+            // Eğer kategori parametresi varsa, ilgili filtreyi ayarla
+            if (categoryParam) {
+                document.getElementById('service-type').value = categoryParam;
+                filterBusinesses();
+            }
+            
+            // Filtrele butonuna tıklandığında
+            document.getElementById('filter-button').addEventListener('click', function() {
+                filterBusinesses();
+            });
+            
+            // Filtreleri temizle butonuna tıklandığında
+            document.getElementById('clear-filters').addEventListener('click', function() {
+                document.getElementById('service-type').value = '';
+                document.getElementById('location').value = '';
+                document.getElementById('rating').value = '';
+                document.getElementById('search').value = '';
+                filterBusinesses();
+            });
+            
+            // Filtreleme fonksiyonu
+            function filterBusinesses() {
+                const serviceType = document.getElementById('service-type').value;
+                const location = document.getElementById('location').value;
+                const rating = document.getElementById('rating').value;
+                const search = document.getElementById('search').value.toLowerCase();
+                
+                // Tüm işletme kartlarını seç
+                const businessCards = document.querySelectorAll('.business-card');
+                
+                let visibleCount = 0;
+                
+                // Her işletme kartını filtrele
+                businessCards.forEach(card => {
+                    const cardServiceType = card.querySelector('.business-type').classList[1];
+                    const cardLocation = card.querySelector('.business-location').textContent.toLowerCase();
+                    const cardRating = parseFloat(card.querySelector('.business-rating span').textContent);
+                    const cardName = card.querySelector('h3').textContent.toLowerCase();
+                    
+                    // Filtreleri uygula
+                    let isVisible = true;
+                    
+                    if (serviceType && cardServiceType !== serviceType) {
+                        isVisible = false;
+                    }
+                    
+                    if (location && !cardLocation.includes(location.toLowerCase())) {
+                        isVisible = false;
+                    }
+                    
+                    if (rating && cardRating < parseInt(rating)) {
+                        isVisible = false;
+                    }
+                    
+                    if (search && !cardName.includes(search)) {
+                        isVisible = false;
+                    }
+                    
+                    // Görünürlüğü ayarla
+                    if (isVisible) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Eğer görünür işletme yoksa, mesaj göster
+                const businessList = document.getElementById('business-list');
+                const noResults = businessList.querySelector('.no-results');
+                
+                if (visibleCount === 0) {
+                    if (!noResults) {
+                        const noResultsElement = document.createElement('div');
+                        noResultsElement.className = 'no-results';
+                        noResultsElement.innerHTML = `
+                            <i class="fas fa-search"></i>
+                            <h3>Sonuç Bulunamadı</h3>
+                            <p>Arama kriterlerinize uygun işletme bulunamadı. Lütfen filtrelerinizi değiştirip tekrar deneyin.</p>
+                            <button id="clear-filters-no-results" class="btn btn-primary">Filtreleri Temizle</button>
+                        `;
+                        businessList.appendChild(noResultsElement);
+                        
+                        // Filtreleri temizle butonuna tıklandığında
+                        document.getElementById('clear-filters-no-results').addEventListener('click', function() {
+                            document.getElementById('service-type').value = '';
+                            document.getElementById('location').value = '';
+                            document.getElementById('rating').value = '';
+                            document.getElementById('search').value = '';
+                            filterBusinesses();
+                        });
+                    }
+                } else if (noResults) {
+                    noResults.remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

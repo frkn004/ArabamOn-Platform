@@ -1,0 +1,337 @@
+        <!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - ArabamOn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #1D3557;
+            --text-color: #333;
+            --bg-color: #F8F9FA;
+            --border-color: #E0E0E0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .login-form {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .btn:hover {
+            background-color: #e85a24;
+        }
+
+        .loader {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .loader::after {
+            content: "";
+            width: 25px;
+            height: 25px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s forwards;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+        }
+
+        .alert.error {
+            background-color: #f44336;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .register-link a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>ArabamOn'a Giriş Yap</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-posta Adresi</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">
+                        Giriş Yap
+                        <span class="loader"></span>
+                    </button>
+                </div>
+            </form>
+            <div class="login-links">
+                <a href="register.html">Hesabınız yok mu? Kayıt olun</a>
+                <a href="forgot-password.html">Şifremi unuttum</a>
+            </div>
+            
+            <!-- Demo Kullanıcı Bilgileri -->
+            <div class="demo-user-info">
+                <h3>Demo Kullanıcıları</h3>
+                <div class="demo-user">
+                    <p><strong>Admin Kullanıcı:</strong><br>
+                    E-posta: admin@arabamon.com<br>
+                    Şifre: 123456</p>
+                </div>
+                <div class="demo-user">
+                    <p><strong>İşletme Sahibi:</strong><br>
+                    E-posta: business@arabamon.com<br>
+                    Şifre: 123456</p>
+                </div>
+                <div class="demo-user">
+                    <p><strong>Normal Kullanıcı:</strong><br>
+                    E-posta: user@arabamon.com<br>
+                    Şifre: 123456</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Script -->
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            
+            // Form gönderildiğinde
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Giriş verilerini al
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                // Giriş butonunu ve loader'ı göster
+                const submitButton = this.querySelector('button[type="submit"]');
+                const loader = submitButton ? submitButton.querySelector('.loader') : null;
+                
+                if (submitButton) {
+                    submitButton.classList.add('loading');
+                }
+                if (loader) {
+                    loader.style.display = 'flex';
+                }
+                
+                try {
+                    // API ile giriş işlemini çağır
+                    await window.Auth.login(email, password);
+                    
+                    // Başarılı giriş mesajı
+                    showAlert('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+                    
+                    // Kullanıcıyı rolüne göre yönlendir
+                    const userData = window.Auth.TokenManager.getUserData();
+                    setTimeout(() => {
+                        redirectUserByRole(userData.role);
+                    }, 1000);
+                    
+                } catch (error) {
+                    // Hata durumunda
+                    if (submitButton) {
+                        submitButton.classList.remove('loading');
+                    }
+                    if (loader) {
+                        loader.style.display = 'none';
+                    }
+                    showAlert(error.message || 'Giriş bilgileri hatalı!', 'error');
+                }
+            });
+            
+            // Mesaj gösterme fonksiyonu
+            function showAlert(message, type) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${type}`;
+                alertDiv.textContent = message;
+                document.body.appendChild(alertDiv);
+                
+                // 5 saniye sonra mesajı kaldır
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            }
+            
+            // Kullanıcı rolüne göre yönlendirme
+            function redirectUserByRole(role) {
+                switch (role) {
+                    case 'admin':
+                        window.location.href = '/admin-dashboard.html';
+                        break;
+                    case 'business':
+                        window.location.href = '/business-dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '/profile.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

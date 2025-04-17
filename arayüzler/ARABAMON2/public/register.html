@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .navbar-links {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 1.5rem;
+        }
+
+        .navbar-links li a {
+            color: var(--dark-color);
+            transition: color 0.3s;
+        }
+
+        .navbar-links li a:hover, 
+        .navbar-links li a.active {
+            color: var(--primary-color);
+        }
+        
+        .navbar-right {
+            margin-left: auto;
+        }
+
+        /* Form Container */
+        .form-container {
+            padding: 2rem 0 4rem;
+        }
+
+        .form-wrapper {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-wrapper h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="tel"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Tab Design for Account Type */
+        .account-type-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .account-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .account-tab.active {
+            background-color: white;
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .account-tab:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .account-tab:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .account-tab-input {
+            display: none;
+        }
+
+        /* Business Fields Styling */
+        .business-fields-container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .business-fields-container.hidden {
+            display: none;
+        }
+
+        .business-fields-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .business-fields-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .business-category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .category-tag {
+            background-color: #f0f0f0;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .category-tag .remove-tag {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: #999;
+        }
+
+        .category-tag .remove-tag:hover {
+            color: var(--danger-color);
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .file-upload-btn {
+            padding: 0.6rem 1rem;
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-btn:hover {
+            background-color: #e8e8e8;
+            border-color: #999;
+        }
+
+        .file-upload-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .category-input-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .full-width {
+            flex: 1;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0055b3;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e55c00;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Form Footer */
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+            color: #ddd;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+            }
+            
+            .navbar-links {
+                margin-top: 1rem;
+            }
+            
+            .navbar-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .form-wrapper {
+                padding: 1.5rem;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/about.html">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html" class="active">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="form-container">
+        <div class="container">
+            <div class="form-wrapper">
+                <h1>Hesap Oluştur</h1>
+                <div class="alert-container"></div>
+                
+                <div class="account-type-tabs">
+                    <div class="account-tab active" id="user-tab">Bireysel Müşteri</div>
+                    <div class="account-tab" id="business-tab">İşletme Sahibi</div>
+                </div>
+                
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="name">Ad Soyad</label>
+                        <input type="text" id="name" name="name" required placeholder="Tam adınızı giriniz">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" name="email" required placeholder="örnek@mail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Şifre</label>
+                        <input type="password" id="password" name="password" required minlength="6">
+                        <small>En az 6 karakter olmalıdır</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon</label>
+                        <input type="tel" id="phone" name="phone" placeholder="5XX XXX XXXX" required>
+                    </div>
+                    
+                    <input type="hidden" name="role" value="user" id="role-input">
+                    
+                    <div id="business-fields" class="business-fields-container hidden">
+                        <div class="business-fields-header">
+                            <h3>İşletme Bilgileri</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessName">İşletme Adı</label>
+                            <input type="text" id="businessName" name="businessName" placeholder="İşletmenizin tam adı">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">İşletme Adresi</label>
+                            <input type="text" id="address" name="address" placeholder="Sokak, Mahalle, No">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">Şehir / İlçe</label>
+                            <input type="text" id="city" name="city" placeholder="İstanbul / Kadıköy">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">İşletme Açıklaması</label>
+                            <textarea id="description" name="description" rows="3" placeholder="İşletmeniz hakkında kısa bir açıklama yazın. Sunduğunuz hizmetleri ve öne çıkan özelliklerinizi belirtin."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessPhone">İşletme Telefonu</label>
+                            <input type="tel" id="businessPhone" name="businessPhone" placeholder="(0212) XXX XX XX">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="website">Web Sitesi (Opsiyonel)</label>
+                            <input type="text" id="website" name="website" placeholder="www.işletmeniz.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workingHours">Çalışma Saatleri</label>
+                            <input type="text" id="workingHours" name="workingHours" placeholder="Örn: Pazartesi-Cuma: 09:00-18:00, Cumartesi: 10:00-15:00">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categories">Hizmet Kategorileri</label>
+                            <div class="business-category-tags" id="category-tags-container">
+                                <!-- Kategoriler burada görünecek -->
+                            </div>
+                            <div class="category-input-container">
+                                <input type="text" id="category-input" placeholder="Kategori ekle (örn: Lastik, Motor, Bakım)" class="full-width">
+                                <button type="button" id="add-category-btn" class="btn btn-primary">Ekle</button>
+                            </div>
+                            <input type="hidden" id="categories" name="categories">
+                            <small>İşletmenizin hizmet verdiği kategorileri ekleyin</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>İşletme Fotoğrafı (Opsiyonel)</label>
+                            <div class="file-upload">
+                                <label for="business-image" class="file-upload-btn">
+                                    Fotoğraf Seç
+                                </label>
+                                <input type="file" id="business-image" accept="image/*" class="hidden-input">
+                                <span class="file-upload-info" id="file-info">Henüz dosya seçilmedi</span>
+                            </div>
+                            <small>Tavsiye edilen boyut: 800x600 piksel, JPG veya PNG format</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <p>Zaten bir hesabınız var mı? <a href="/login.html">Giriş yapın</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetleri platformu.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>info@arabamon.com</p>
+                    <p>+90 555 123 4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('register-form');
+            const alertContainer = document.querySelector('.alert-container');
+            const businessFields = document.getElementById('business-fields');
+            const userTab = document.getElementById('user-tab');
+            const businessTab = document.getElementById('business-tab');
+            const roleInput = document.getElementById('role-input');
+            const categoryInput = document.getElementById('category-input');
+            const addCategoryBtn = document.getElementById('add-category-btn');
+            const categoryTagsContainer = document.getElementById('category-tags-container');
+            const categoriesInput = document.getElementById('categories');
+            const businessImage = document.getElementById('business-image');
+            const fileInfo = document.getElementById('file-info');
+            
+            // URL'den rol parametresini al
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role');
+            
+            if (roleParam === 'business') {
+                switchToBusiness();
+            }
+            
+            // Tab değişimi
+            userTab.addEventListener('click', switchToUser);
+            businessTab.addEventListener('click', switchToBusiness);
+            
+            function switchToUser() {
+                userTab.classList.add('active');
+                businessTab.classList.remove('active');
+                businessFields.classList.add('hidden');
+                roleInput.value = 'user';
+            }
+            
+            function switchToBusiness() {
+                businessTab.classList.add('active');
+                userTab.classList.remove('active');
+                businessFields.classList.remove('hidden');
+                roleInput.value = 'business';
+            }
+            
+            // Kategoriler
+            const categories = [];
+            
+            addCategoryBtn.addEventListener('click', addCategory);
+            categoryInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addCategory();
+                }
+            });
+            
+            function addCategory() {
+                const category = categoryInput.value.trim();
+                if (category && !categories.includes(category)) {
+                    categories.push(category);
+                    updateCategoryTags();
+                    categoryInput.value = '';
+                }
+            }
+            
+            function removeCategory(category) {
+                const index = categories.indexOf(category);
+                if (index !== -1) {
+                    categories.splice(index, 1);
+                    updateCategoryTags();
+                }
+            }
+            
+            function updateCategoryTags() {
+                categoryTagsContainer.innerHTML = '';
+                categories.forEach(category => {
+                    const tag = document.createElement('div');
+                    tag.className = 'category-tag';
+                    tag.innerHTML = `
+                        ${category}
+                        <span class="remove-tag" data-category="${category}">&times;</span>
+                    `;
+                    categoryTagsContainer.appendChild(tag);
+                });
+                
+                // Update hidden input
+                categoriesInput.value = categories.join(',');
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-tag').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const category = e.target.dataset.category;
+                        removeCategory(category);
+                    });
+                });
+            }
+            
+            // Dosya yükleme
+            businessImage.addEventListener('change', () => {
+                if (businessImage.files.length > 0) {
+                    fileInfo.textContent = businessImage.files[0].name;
+                } else {
+                    fileInfo.textContent = 'Henüz dosya seçilmedi';
+                }
+            });
+            
+            // Form gönderimi
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const phone = document.getElementById('phone').value.trim();
+                const role = roleInput.value;
+                
+                if (!name || !email || !password || !phone) {
+                    showAlert('Lütfen zorunlu alanları doldurun', 'danger');
+                    return;
+                }
+                
+                // İşletme alanları kontrolü
+                if (role === 'business') {
+                    const businessName = document.getElementById('businessName').value.trim();
+                    const address = document.getElementById('address').value.trim();
+                    const city = document.getElementById('city').value.trim();
+                    const description = document.getElementById('description').value.trim();
+                    
+                    if (!businessName || !address || !city || !description) {
+                        showAlert('Lütfen tüm işletme bilgilerini doldurun', 'danger');
+                        return;
+                    }
+                    
+                    if (categories.length === 0) {
+                        showAlert('Lütfen en az bir hizmet kategorisi ekleyin', 'danger');
+                        return;
+                    }
+                }
+                
+                // Kayıt butonunu devre dışı bırak
+                const submitButton = registerForm.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Kayıt Yapılıyor...';
+                
+                try {
+                    // Normalde burada API çağrısı yapılacak, şimdilik sahte veri kullanıyoruz
+                    // const result = await api.auth.register(userData);
+                    
+                    // Başarılı kayıt mesajı
+                    showAlert('Kaydınız başarıyla oluşturuldu! Yönlendiriliyorsunuz...', 'success');
+                    
+                    // 2 saniye sonra ana sayfaya yönlendir
+                    setTimeout(() => {
+                        window.location.href = role === 'business' ? '/business-dashboard.html' : '/profile.html';
+                    }, 2000);
+                    
+                } catch (err) {
+                    showAlert(err.message || 'Kayıt yapılırken bir hata oluştu', 'danger');
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                }
+            });
+            
+            // Uyarı mesajı gösterme fonksiyonu
+            function showAlert(message, type) {
+                alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                
+                // 5 saniye sonra uyarıyı kaldır
+                setTimeout(() => {
+                    const alert = alertContainer.querySelector('.alert');
+                    if (alert) {
+                        alert.style.opacity = '0';
+                        setTimeout(() => {
+                            alertContainer.innerHTML = '';
+                        }, 300);
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html> 
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .navbar-links {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 1.5rem;
+        }
+
+        .navbar-links li a {
+            color: var(--dark-color);
+            transition: color 0.3s;
+        }
+
+        .navbar-links li a:hover, 
+        .navbar-links li a.active {
+            color: var(--primary-color);
+        }
+        
+        .navbar-right {
+            margin-left: auto;
+        }
+
+        /* Form Container */
+        .form-container {
+            padding: 2rem 0 4rem;
+        }
+
+        .form-wrapper {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-wrapper h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="tel"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Tab Design for Account Type */
+        .account-type-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .account-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .account-tab.active {
+            background-color: white;
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .account-tab:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .account-tab:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .account-tab-input {
+            display: none;
+        }
+
+        /* Business Fields Styling */
+        .business-fields-container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .business-fields-container.hidden {
+            display: none;
+        }
+
+        .business-fields-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .business-fields-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .business-category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .category-tag {
+            background-color: #f0f0f0;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .category-tag .remove-tag {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: #999;
+        }
+
+        .category-tag .remove-tag:hover {
+            color: var(--danger-color);
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .file-upload-btn {
+            padding: 0.6rem 1rem;
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-btn:hover {
+            background-color: #e8e8e8;
+            border-color: #999;
+        }
+
+        .file-upload-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .category-input-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .full-width {
+            flex: 1;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0055b3;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e55c00;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Form Footer */
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+            color: #ddd;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+            }
+            
+            .navbar-links {
+                margin-top: 1rem;
+            }
+            
+            .navbar-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .form-wrapper {
+                padding: 1.5rem;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/about.html">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html" class="active">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="form-container">
+        <div class="container">
+            <div class="form-wrapper">
+                <h1>Hesap Oluştur</h1>
+                <div class="alert-container"></div>
+                
+                <div class="account-type-tabs">
+                    <div class="account-tab active" id="user-tab">Bireysel Müşteri</div>
+                    <div class="account-tab" id="business-tab">İşletme Sahibi</div>
+                </div>
+                
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="name">Ad Soyad</label>
+                        <input type="text" id="name" name="name" required placeholder="Tam adınızı giriniz">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" name="email" required placeholder="örnek@mail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Şifre</label>
+                        <input type="password" id="password" name="password" required minlength="6">
+                        <small>En az 6 karakter olmalıdır</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon</label>
+                        <input type="tel" id="phone" name="phone" placeholder="5XX XXX XXXX" required>
+                    </div>
+                    
+                    <input type="hidden" name="role" value="user" id="role-input">
+                    
+                    <div id="business-fields" class="business-fields-container hidden">
+                        <div class="business-fields-header">
+                            <h3>İşletme Bilgileri</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessName">İşletme Adı</label>
+                            <input type="text" id="businessName" name="businessName" placeholder="İşletmenizin tam adı">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">İşletme Adresi</label>
+                            <input type="text" id="address" name="address" placeholder="Sokak, Mahalle, No">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">Şehir / İlçe</label>
+                            <input type="text" id="city" name="city" placeholder="İstanbul / Kadıköy">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">İşletme Açıklaması</label>
+                            <textarea id="description" name="description" rows="3" placeholder="İşletmeniz hakkında kısa bir açıklama yazın. Sunduğunuz hizmetleri ve öne çıkan özelliklerinizi belirtin."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessPhone">İşletme Telefonu</label>
+                            <input type="tel" id="businessPhone" name="businessPhone" placeholder="(0212) XXX XX XX">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="website">Web Sitesi (Opsiyonel)</label>
+                            <input type="text" id="website" name="website" placeholder="www.işletmeniz.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workingHours">Çalışma Saatleri</label>
+                            <input type="text" id="workingHours" name="workingHours" placeholder="Örn: Pazartesi-Cuma: 09:00-18:00, Cumartesi: 10:00-15:00">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categories">Hizmet Kategorileri</label>
+                            <div class="business-category-tags" id="category-tags-container">
+                                <!-- Kategoriler burada görünecek -->
+                            </div>
+                            <div class="category-input-container">
+                                <input type="text" id="category-input" placeholder="Kategori ekle (örn: Lastik, Motor, Bakım)" class="full-width">
+                                <button type="button" id="add-category-btn" class="btn btn-primary">Ekle</button>
+                            </div>
+                            <input type="hidden" id="categories" name="categories">
+                            <small>İşletmenizin hizmet verdiği kategorileri ekleyin</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>İşletme Fotoğrafı (Opsiyonel)</label>
+                            <div class="file-upload">
+                                <label for="business-image" class="file-upload-btn">
+                                    Fotoğraf Seç
+                                </label>
+                                <input type="file" id="business-image" accept="image/*" class="hidden-input">
+                                <span class="file-upload-info" id="file-info">Henüz dosya seçilmedi</span>
+                            </div>
+                            <small>Tavsiye edilen boyut: 800x600 piksel, JPG veya PNG format</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <p>Zaten bir hesabınız var mı? <a href="/login.html">Giriş yapın</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetleri platformu.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>info@arabamon.com</p>
+                    <p>+90 555 123 4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('register-form');
+            const alertContainer = document.querySelector('.alert-container');
+            const businessFields = document.getElementById('business-fields');
+            const userTab = document.getElementById('user-tab');
+            const businessTab = document.getElementById('business-tab');
+            const roleInput = document.getElementById('role-input');
+            const categoryInput = document.getElementById('category-input');
+            const addCategoryBtn = document.getElementById('add-category-btn');
+            const categoryTagsContainer = document.getElementById('category-tags-container');
+            const categoriesInput = document.getElementById('categories');
+            const businessImage = document.getElementById('business-image');
+            const fileInfo = document.getElementById('file-info');
+            
+            // URL'den rol parametresini al
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role');
+            
+            if (roleParam === 'business') {
+                switchToBusiness();
+            }
+            
+            // Tab değişimi
+            userTab.addEventListener('click', switchToUser);
+            businessTab.addEventListener('click', switchToBusiness);
+            
+            function switchToUser() {
+                userTab.classList.add('active');
+                businessTab.classList.remove('active');
+                businessFields.classList.add('hidden');
+                roleInput.value = 'user';
+            }
+            
+            function switchToBusiness() {
+                businessTab.classList.add('active');
+                userTab.classList.remove('active');
+                businessFields.classList.remove('hidden');
+                roleInput.value = 'business';
+            }
+            
+            // Kategoriler
+            const categories = [];
+            
+            addCategoryBtn.addEventListener('click', addCategory);
+            categoryInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addCategory();
+                }
+            });
+            
+            function addCategory() {
+                const category = categoryInput.value.trim();
+                if (category && !categories.includes(category)) {
+                    categories.push(category);
+                    updateCategoryTags();
+                    categoryInput.value = '';
+                }
+            }
+            
+            function removeCategory(category) {
+                const index = categories.indexOf(category);
+                if (index !== -1) {
+                    categories.splice(index, 1);
+                    updateCategoryTags();
+                }
+            }
+            
+            function updateCategoryTags() {
+                categoryTagsContainer.innerHTML = '';
+                categories.forEach(category => {
+                    const tag = document.createElement('div');
+                    tag.className = 'category-tag';
+                    tag.innerHTML = `
+                        ${category}
+                        <span class="remove-tag" data-category="${category}">&times;</span>
+                    `;
+                    categoryTagsContainer.appendChild(tag);
+                });
+                
+                // Update hidden input
+                categoriesInput.value = categories.join(',');
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-tag').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const category = e.target.dataset.category;
+                        removeCategory(category);
+                    });
+                });
+            }
+            
+            // Dosya yükleme
+            businessImage.addEventListener('change', () => {
+                if (businessImage.files.length > 0) {
+                    fileInfo.textContent = businessImage.files[0].name;
+                } else {
+                    fileInfo.textContent = 'Henüz dosya seçilmedi';
+                }
+            });
+            
+            // Form gönderimi
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const phone = document.getElementById('phone').value.trim();
+                const role = roleInput.value;
+                
+                if (!name || !email || !password || !phone) {
+                    showAlert('Lütfen zorunlu alanları doldurun', 'danger');
+                    return;
+                }
+                
+                // İşletme alanları kontrolü
+                if (role === 'business') {
+                    const businessName = document.getElementById('businessName').value.trim();
+                    const address = document.getElementById('address').value.trim();
+                    const city = document.getElementById('city').value.trim();
+                    const description = document.getElementById('description').value.trim();
+                    
+                    if (!businessName || !address || !city || !description) {
+                        showAlert('Lütfen tüm işletme bilgilerini doldurun', 'danger');
+                        return;
+                    }
+                    
+                    if (categories.length === 0) {
+                        showAlert('Lütfen en az bir hizmet kategorisi ekleyin', 'danger');
+                        return;
+                    }
+                }
+                
+                // Kayıt butonunu devre dışı bırak
+                const submitButton = registerForm.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Kayıt Yapılıyor...';
+                
+                try {
+                    // Normalde burada API çağrısı yapılacak, şimdilik sahte veri kullanıyoruz
+                    // const result = await api.auth.register(userData);
+                    
+                    // Başarılı kayıt mesajı
+                    showAlert('Kaydınız başarıyla oluşturuldu! Yönlendiriliyorsunuz...', 'success');
+                    
+                    // 2 saniye sonra ana sayfaya yönlendir
+                    setTimeout(() => {
+                        window.location.href = role === 'business' ? '/business-dashboard.html' : '/profile.html';
+                    }, 2000);
+                    
+                } catch (err) {
+                    showAlert(err.message || 'Kayıt yapılırken bir hata oluştu', 'danger');
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                }
+            });
+            
+            // Uyarı mesajı gösterme fonksiyonu
+            function showAlert(message, type) {
+                alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                
+                // 5 saniye sonra uyarıyı kaldır
+                setTimeout(() => {
+                    const alert = alertContainer.querySelector('.alert');
+                    if (alert) {
+                        alert.style.opacity = '0';
+                        setTimeout(() => {
+                            alertContainer.innerHTML = '';
+                        }, 300);
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html> 

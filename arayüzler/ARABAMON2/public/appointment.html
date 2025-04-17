@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Oluştur - ArabamOn</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNLrJhOMz6idD05pzfn5lhA-TAw-mAZCU"></script>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1 class="mb-4 text-primary">Randevu Oluştur</h1>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Randevu Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="appointment-form">
+                            <div class="mb-3">
+                                <label for="business-type" class="form-label">İşletme Türü</label>
+                                <select class="form-select" id="business-type" required>
+                                    <option value="">İşletme Türü Seçin</option>
+                                    <option value="aracyikama">Araç Yıkama</option>
+                                    <option value="ekspertiz">Ekspertiz</option>
+                                    <option value="otopark">Otopark</option>
+                                    <option value="lastikdegisim">Lastik Değişim</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="business" class="form-label">İşletme</label>
+                                <select class="form-select" id="business" required>
+                                    <option value="">Önce İşletme Türü Seçin</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="service" class="form-label">Hizmet</label>
+                                <select class="form-select" id="service" required>
+                                    <option value="">Önce İşletme Seçin</option>
+                                </select>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="date" class="form-label">Tarih</label>
+                                        <input type="date" class="form-control" id="date" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="time" class="form-label">Saat</label>
+                                        <select class="form-select" id="time" required>
+                                            <option value="">Önce Tarih Seçin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notlar</label>
+                                <textarea class="form-control" id="notes" rows="3" placeholder="Randevu ile ilgili eklemek istediğiniz notlar..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Randevu Oluştur</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">İşletme Konumları</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="map-container" style="height: 400px;"></div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-center gap-2 mb-2">
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/blue.png" alt="Araç Yıkama" height="20">
+                                <span class="ms-1">Araç Yıkama</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/orange.png" alt="Ekspertiz" height="20">
+                                <span class="ms-1">Ekspertiz</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/green.png" alt="Otopark" height="20">
+                                <span class="ms-1">Otopark</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/red.png" alt="Lastik Değişim" height="20">
+                                <span class="ms-1">Lastik Değişim</span>
+                            </div>
+                        </div>
+                        <div class="text-center small text-muted">
+                            İşaretçilere tıklayarak istediğiniz işletmeyi seçebilirsiniz
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Bilgilendirme</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><i class="bi bi-info-circle-fill text-primary me-2"></i> Randevunuzu oluşturduğunuzda, hem size hem de işletmeye randevu bilgilerini içeren bir bildirim gönderilecektir.</p>
+                        <p><i class="bi bi-clock-fill text-primary me-2"></i> Randevunuzu, randevu saatinden en az 2 saat öncesine kadar iptal edebilirsiniz.</p>
+                        <p><i class="bi bi-star-fill text-primary me-2"></i> Randevu sonrası, hizmeti değerlendirmeniz için size bir bildirim gönderilecektir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/appointment.js"></script>
+</body>
+</html> 
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Oluştur - ArabamOn</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNLrJhOMz6idD05pzfn5lhA-TAw-mAZCU"></script>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1 class="mb-4 text-primary">Randevu Oluştur</h1>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Randevu Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="appointment-form">
+                            <div class="mb-3">
+                                <label for="business-type" class="form-label">İşletme Türü</label>
+                                <select class="form-select" id="business-type" required>
+                                    <option value="">İşletme Türü Seçin</option>
+                                    <option value="aracyikama">Araç Yıkama</option>
+                                    <option value="ekspertiz">Ekspertiz</option>
+                                    <option value="otopark">Otopark</option>
+                                    <option value="lastikdegisim">Lastik Değişim</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="business" class="form-label">İşletme</label>
+                                <select class="form-select" id="business" required>
+                                    <option value="">Önce İşletme Türü Seçin</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="service" class="form-label">Hizmet</label>
+                                <select class="form-select" id="service" required>
+                                    <option value="">Önce İşletme Seçin</option>
+                                </select>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="date" class="form-label">Tarih</label>
+                                        <input type="date" class="form-control" id="date" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="time" class="form-label">Saat</label>
+                                        <select class="form-select" id="time" required>
+                                            <option value="">Önce Tarih Seçin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notlar</label>
+                                <textarea class="form-control" id="notes" rows="3" placeholder="Randevu ile ilgili eklemek istediğiniz notlar..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Randevu Oluştur</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">İşletme Konumları</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="map-container" style="height: 400px;"></div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-center gap-2 mb-2">
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/blue.png" alt="Araç Yıkama" height="20">
+                                <span class="ms-1">Araç Yıkama</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/orange.png" alt="Ekspertiz" height="20">
+                                <span class="ms-1">Ekspertiz</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/green.png" alt="Otopark" height="20">
+                                <span class="ms-1">Otopark</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="http://maps.google.com/mapfiles/ms/icons/red.png" alt="Lastik Değişim" height="20">
+                                <span class="ms-1">Lastik Değişim</span>
+                            </div>
+                        </div>
+                        <div class="text-center small text-muted">
+                            İşaretçilere tıklayarak istediğiniz işletmeyi seçebilirsiniz
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Bilgilendirme</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><i class="bi bi-info-circle-fill text-primary me-2"></i> Randevunuzu oluşturduğunuzda, hem size hem de işletmeye randevu bilgilerini içeren bir bildirim gönderilecektir.</p>
+                        <p><i class="bi bi-clock-fill text-primary me-2"></i> Randevunuzu, randevu saatinden en az 2 saat öncesine kadar iptal edebilirsiniz.</p>
+                        <p><i class="bi bi-star-fill text-primary me-2"></i> Randevu sonrası, hizmeti değerlendirmeniz için size bir bildirim gönderilecektir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/appointment.js"></script>
+</body>
+</html> 

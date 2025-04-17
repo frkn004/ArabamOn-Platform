@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş - Arabamon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header h1 {
+            color: #3949ab;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+            font-weight: 500;
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+        
+        .login-form input:focus {
+            outline: none;
+            border-color: #3949ab;
+            box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.1);
+        }
+        
+        .login-form button {
+            width: 100%;
+            background-color: #3949ab;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .login-form button:hover {
+            background-color: #303f9f;
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .login-footer a {
+            color: #3949ab;
+            text-decoration: none;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .login-footer .separator {
+            display: inline-block;
+            margin: 0 0.5rem;
+            color: #d1d5db;
+        }
+        
+        .login-options {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .login-options-label {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .login-options-label::before,
+        .login-options-label::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #d1d5db;
+        }
+        
+        .login-options-label::before {
+            left: 0;
+        }
+        
+        .login-options-label::after {
+            right: 0;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.25rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .social-btn.google {
+            background-color: #DB4437;
+        }
+        
+        .social-btn.facebook {
+            background-color: #4267B2;
+        }
+        
+        .social-btn.apple {
+            background-color: #000000;
+        }
+        
+        .account-types {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .account-type {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .account-type.active {
+            background-color: rgba(57, 73, 171, 0.1);
+            border-color: #3949ab;
+            color: #3949ab;
+        }
+        
+        .account-type:hover {
+            border-color: #3949ab;
+        }
+        
+        .account-type i {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Arabamon</h1>
+            <p>Araç bakım hizmetleri platformu</p>
+        </div>
+        
+        <div class="account-types">
+            <div class="account-type active" id="userTypeBtn">
+                <i class="fas fa-user"></i>
+                <span>Kullanıcı</span>
+            </div>
+            <div class="account-type" id="businessTypeBtn">
+                <i class="fas fa-store"></i>
+                <span>İşletme</span>
+            </div>
+        </div>
+        
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">E-posta Adresi</label>
+                <input type="email" id="loginEmail" value="kullanici@gmail.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Şifre</label>
+                <input type="password" id="loginPassword" value="parola123" required>
+            </div>
+            
+            <button type="submit" id="loginSubmitBtn">Giriş Yap</button>
+        </form>
+        
+        <div id="loginStatus" style="margin-top: 15px; color: red; text-align: center;"></div>
+        
+        <div class="login-footer">
+            <a href="#">Şifremi Unuttum</a>
+            <span class="separator">|</span>
+            <a href="#">Yeni Hesap Oluştur</a>
+        </div>
+        
+        <div class="login-options">
+            <div class="login-options-label">veya</div>
+            <div class="social-login">
+                <a href="#" class="social-btn google"><i class="fab fa-google"></i></a>
+                <a href="#" class="social-btn facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn apple"><i class="fab fa-apple"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Kullanıcı tipi seçimi ve direkt giriş için script
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTypeBtn = document.getElementById('userTypeBtn');
+            const businessTypeBtn = document.getElementById('businessTypeBtn');
+            const loginForm = document.getElementById('loginForm');
+            const loginStatus = document.getElementById('loginStatus');
+            
+            userTypeBtn.addEventListener('click', function() {
+                userTypeBtn.classList.add('active');
+                businessTypeBtn.classList.remove('active');
+                document.getElementById('loginEmail').value = 'kullanici@gmail.com';
+                document.getElementById('loginPassword').value = 'parola123';
+            });
+            
+            businessTypeBtn.addEventListener('click', function() {
+                businessTypeBtn.classList.add('active');
+                userTypeBtn.classList.remove('active');
+                document.getElementById('loginEmail').value = 'isletme@gmail.com';
+                document.getElementById('loginPassword').value = 'parola123';
+            });
+            
+            // Direkt giriş için
+            document.getElementById('loginSubmitBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // users array'ini burada oluşturalım, auth.js'e bağlı olmayalım
+                const users = [
+                    {
+                        id: '1',
+                        email: 'kullanici@gmail.com',
+                        password: 'parola123',
+                        firstName: 'Ahmet',
+                        lastName: 'Yılmaz',
+                        type: 'user'
+                    },
+                    {
+                        id: '2',
+                        email: 'isletme@gmail.com',
+                        password: 'parola123',
+                        businessName: 'Lüks Oto Yıkama',
+                        type: 'business'
+                    }
+                ];
+                
+                console.log("Giriş deneniyor:", email, password);
+                
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    console.log("Kullanıcı bulundu:", user);
+                    const userData = { ...user };
+                    delete userData.password;
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    localStorage.setItem('token', 'mock-token-' + Math.random());
+                    
+                    if (user.type === 'user') {
+                        loginStatus.innerHTML = "Kullanıcı girişi başarılı, yönlendiriliyor...";
+                        loginStatus.style.color = "green";
+                        setTimeout(() => {
+                            window.location.href = 'user-panel.html';
+                        }, 1000);
+                    } else if (user.type === 'business') {
+                        loginStatus.innerHTML = "İşletme girişi başarılı, yönlendiriliyor...";
+                        loginStatus.style.color = "green";
+                        setTimeout(() => {
+                            window.location.href = 'business-panel.html';
+                        }, 1000);
+                    }
+                } else {
+                    loginStatus.innerHTML = "Geçersiz e-posta veya şifre!";
+                    loginStatus.style.color = "red";
+                }
+            });
+            
+            // Test için otomatik doldur
+            document.getElementById('loginEmail').value = 'kullanici@gmail.com';
+            document.getElementById('loginPassword').value = 'parola123';
+        });
+    </script>
+    
+    <script src="js/auth.js"></script>
+</body>
+</html> 

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hizmetler - Arabamon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .services-hero {
+            background: linear-gradient(135deg, var(--primary-color), #0055aa);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .services-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .services-hero p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+        
+        .service-category-section {
+            padding: 5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .service-category-section:last-child {
+            border-bottom: none;
+        }
+        
+        .service-category-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .service-category-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .service-category-header p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: #6c757d;
+        }
+        
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .service-item {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .service-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .service-item:hover .service-image img {
+            transform: scale(1.05);
+        }
+        
+        .service-content {
+            padding: 1.5rem;
+        }
+        
+        .service-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark-color);
+        }
+        
+        .service-content p {
+            color: #6c757d;
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        
+        .service-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .service-price {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .service-businesses {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .service-businesses span {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .service-features {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .service-feature {
+            flex: 1 1 300px;
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 102, 204, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .feature-content h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark-color);
+        }
+        
+        .feature-content p {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .service-feature {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="index.html">Arabamon</a>
+            </div>
+            <nav>
+                <ul class="navbar-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="businesses.html">İşletmeler</a></li>
+                    <li><a href="services.html" class="active">Hizmetler</a></li>
+                    <li><a href="about.html">Hakkımızda</a></li>
+                    <li><a href="contact.html">İletişim</a></li>
+                </ul>
+            </nav>
+            <div class="navbar-right">
+                <a href="login.html" class="btn btn-sm">Giriş Yap</a>
+                <a href="register.html" class="btn btn-secondary btn-sm">Kayıt Ol</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Hero -->
+    <section class="services-hero">
+        <div class="container">
+            <h1>Aracınız İçin Tüm Hizmetler</h1>
+            <p>Arabamon ile araç bakımı artık çok kolay. İhtiyacınız olan tüm hizmetlere tek bir platformdan erişin, hemen randevu alın.</p>
+        </div>
+    </section>
+
+    <!-- Araç Yıkama Hizmetleri -->
+    <section class="service-category-section">
+        <div class="container">
+            <div class="service-category-header">
+                <h2>Araç Yıkama Hizmetleri</h2>
+                <p>Aracınız için en iyi temizlik ve bakım hizmetleri</p>
+            </div>
+            
+            <div class="service-features">
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-car-wash"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Profesyonel Ekipman</h4>
+                        <p>Tüm araç yıkama noktalarımızda profesyonel ekipmanlar ve çevre dostu temizlik ürünleri kullanılmaktadır.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Hızlı Hizmet</h4>
+                        <p>Temel yıkama işlemleri ortalama 30 dakika içinde tamamlanır, detaylı temizlik işlemleri ise hizmet türüne göre değişiklik gösterir.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Güvenli Temizlik</h4>
+                        <p>Aracınızın boyasına ve parçalarına zarar vermeyecek özel formüllü ürünlerle temizlik sağlanır.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service1.jpg" alt="Dış Yıkama">
+                    </div>
+                    <div class="service-content">
+                        <h3>Dış Yıkama</h3>
+                        <p>Aracın dış yüzeyinin özel şampuanlar ile yıkanması, jant temizliği ve kurulama işlemlerini içerir.</p>
+                        <div class="service-meta">
+                            <div class="service-price">150 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>50+ İşletme</span>
+                                <a href="businesses.html?category=aracyikama" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service2.jpg" alt="İç Temizlik">
+                    </div>
+                    <div class="service-content">
+                        <h3>İç Temizlik</h3>
+                        <p>Koltuk temizliği, torpido ve kapı içi temizliği, tavan ve döşeme temizliği, cam temizliği işlemlerini içerir.</p>
+                        <div class="service-meta">
+                            <div class="service-price">200 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>45+ İşletme</span>
+                                <a href="businesses.html?category=aracyikama" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service3.jpg" alt="Detaylı Temizlik">
+                    </div>
+                    <div class="service-content">
+                        <h3>Detaylı Temizlik</h3>
+                        <p>Dış ve iç temizliğin yanı sıra motor temizliği, cilalama ve koruma işlemlerini içeren tam kapsamlı bakım paketi.</p>
+                        <div class="service-meta">
+                            <div class="service-price">500 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>30+ İşletme</span>
+                                <a href="businesses.html?category=aracyikama" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lastik Değişim Hizmetleri -->
+    <section class="service-category-section">
+        <div class="container">
+            <div class="service-category-header">
+                <h2>Lastik Değişim Hizmetleri</h2>
+                <p>Güvenli sürüş için kaliteli lastik hizmetleri</p>
+            </div>
+            
+            <div class="service-features">
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-tire"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Uzman Teknisyenler</h4>
+                        <p>Tüm lastik işlemleri, konusunda uzman teknisyenler tarafından gerçekleştirilir.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Balans Ayarı</h4>
+                        <p>Lastik değişimi sonrası araç titreşimlerini önlemek için hassas balans ayarı yapılır.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Lastik Depolama</h4>
+                        <p>Mevsimsel lastik değişimlerinde, kullanılmayan lastiklerinizi uygun koşullarda saklama hizmeti.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service4.jpg" alt="Lastik Değişimi">
+                    </div>
+                    <div class="service-content">
+                        <h3>Lastik Değişimi</h3>
+                        <p>Aracınızın lastiklerinin sökülmesi, yeni lastiklerin takılması ve balans ayarının yapılması işlemlerini içerir.</p>
+                        <div class="service-meta">
+                            <div class="service-price">100 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>40+ İşletme</span>
+                                <a href="businesses.html?category=lastikdegisim" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service5.jpg" alt="Rot Balans Ayarı">
+                    </div>
+                    <div class="service-content">
+                        <h3>Rot Balans Ayarı</h3>
+                        <p>Lastiklerin düzgün aşınmasını sağlamak ve sürüş performansını artırmak için tekerlek ayarlarının düzenlenmesi.</p>
+                        <div class="service-meta">
+                            <div class="service-price">250 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>35+ İşletme</span>
+                                <a href="businesses.html?category=lastikdegisim" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service6.jpg" alt="Lastik Tamiri">
+                    </div>
+                    <div class="service-content">
+                        <h3>Lastik Tamiri</h3>
+                        <p>Lastikteki delik, kesik, çivi batması gibi sorunların profesyonel yöntemlerle tamir edilmesi.</p>
+                        <div class="service-meta">
+                            <div class="service-price">80 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>50+ İşletme</span>
+                                <a href="businesses.html?category=lastikdegisim" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ekspertiz Hizmetleri -->
+    <section class="service-category-section">
+        <div class="container">
+            <div class="service-category-header">
+                <h2>Ekspertiz Hizmetleri</h2>
+                <p>Aracınızın durumunu detaylı şekilde inceleyen profesyonel kontrol hizmetleri</p>
+            </div>
+            
+            <div class="service-features">
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Detaylı Raporlama</h4>
+                        <p>Her ekspertiz sonrasında aracınızın durumu ile ilgili detaylı ve anlaşılır bir rapor sunulur.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>İleri Teknoloji</h4>
+                        <p>Ekspertiz merkezlerimizde en son teknoloji cihazlar kullanılarak hassas ölçümler yapılır.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Uzman Kadro</h4>
+                        <p>Tüm kontroller, alanında uzman mühendisler ve teknisyenler tarafından gerçekleştirilir.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service7.jpg" alt="Temel Ekspertiz">
+                    </div>
+                    <div class="service-content">
+                        <h3>Temel Ekspertiz</h3>
+                        <p>Aracın kaporta, boya, motor ve şasi kontrollerini içeren temel inceleme paketi.</p>
+                        <div class="service-meta">
+                            <div class="service-price">300 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>25+ İşletme</span>
+                                <a href="businesses.html?category=ekspertiz" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service8.jpg" alt="Detaylı Ekspertiz">
+                    </div>
+                    <div class="service-content">
+                        <h3>Detaylı Ekspertiz</h3>
+                        <p>Temel kontrole ek olarak elektronik sistem, fren, süspansiyon ve diğer kritik parçaların detaylı incelemesi.</p>
+                        <div class="service-meta">
+                            <div class="service-price">500 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>20+ İşletme</span>
+                                <a href="businesses.html?category=ekspertiz" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service9.jpg" alt="Alım-Satım Ekspertizi">
+                    </div>
+                    <div class="service-content">
+                        <h3>Alım-Satım Ekspertizi</h3>
+                        <p>İkinci el araç alım-satım işlemleri öncesi aracın piyasa değeri, hasar durumu ve genel durumunun değerlendirilmesi.</p>
+                        <div class="service-meta">
+                            <div class="service-price">400 ₺'den başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>30+ İşletme</span>
+                                <a href="businesses.html?category=ekspertiz" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Otopark Hizmetleri -->
+    <section class="service-category-section">
+        <div class="container">
+            <div class="service-category-header">
+                <h2>Otopark Hizmetleri</h2>
+                <p>Aracınız için güvenli ve uygun fiyatlı park çözümleri</p>
+            </div>
+            
+            <div class="service-features">
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>7/24 Güvenlik</h4>
+                        <p>Tüm otopark alanlarımız güvenlik kameraları ve görevliler ile sürekli denetim altındadır.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Esnek Ödeme</h4>
+                        <p>Saatlik, günlük, haftalık ve aylık gibi farklı sürelerde park imkanı ve ödeme seçenekleri.</p>
+                    </div>
+                </div>
+                <div class="service-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Merkezi Konum</h4>
+                        <p>Şehir merkezlerine yakın, ulaşımı kolay noktalarda bulunan otopark çözümleri.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service10.jpg" alt="Kapalı Otopark">
+                    </div>
+                    <div class="service-content">
+                        <h3>Kapalı Otopark</h3>
+                        <p>Hava koşullarından etkilenmemesi için aracınızı kapalı ve güvenli alanlarda park etme hizmeti.</p>
+                        <div class="service-meta">
+                            <div class="service-price">20 ₺/saat'ten başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>15+ İşletme</span>
+                                <a href="businesses.html?category=otopark" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service11.jpg" alt="Açık Otopark">
+                    </div>
+                    <div class="service-content">
+                        <h3>Açık Otopark</h3>
+                        <p>Açık alanda, güvenlik kameraları ile izlenen ekonomik park çözümü.</p>
+                        <div class="service-meta">
+                            <div class="service-price">15 ₺/saat'ten başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>20+ İşletme</span>
+                                <a href="businesses.html?category=otopark" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-image">
+                        <img src="images/service12.jpg" alt="Aylık Abonelik">
+                    </div>
+                    <div class="service-content">
+                        <h3>Aylık Abonelik</h3>
+                        <p>Düzenli park ihtiyacı olanlar için avantajlı fiyatlarla aylık park üyeliği.</p>
+                        <div class="service-meta">
+                            <div class="service-price">400 ₺/ay'dan başlayan fiyatlarla</div>
+                            <div class="service-businesses">
+                                <span>10+ İşletme</span>
+                                <a href="businesses.html?category=otopark" class="btn btn-sm">İşletmeleri Gör</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content text-center">
+                <h2>Hızlı ve Kolay Randevu</h2>
+                <p>İhtiyacınız olan hizmeti seçin, size en yakın işletmeyi bulun ve hemen randevu alın.</p>
+                <a href="businesses.html" class="btn btn-secondary btn-lg">İşletmeleri Keşfedin</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Aracınız için en yakın ve en kaliteli hizmet noktalarını bulun, anında randevu alın.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="businesses.html">İşletmeler</a></li>
+                        <li><a href="services.html">Hizmetler</a></li>
+                        <li><a href="about.html">Hakkımızda</a></li>
+                        <li><a href="contact.html">İletişim</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hizmetler</h3>
+                    <ul>
+                        <li><a href="businesses.html?category=aracyikama">Araç Yıkama</a></li>
+                        <li><a href="businesses.html?category=lastikdegisim">Lastik Değişimi</a></li>
+                        <li><a href="businesses.html?category=ekspertiz">Ekspertiz</a></li>
+                        <li><a href="businesses.html?category=otopark">Otopark</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> İstanbul, Türkiye</li>
+                        <li><i class="fas fa-phone"></i> +90 (212) 123 45 67</li>
+                        <li><i class="fas fa-envelope"></i> info@arabamon.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- API JS -->
+    <script src="js/api.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+</body>
+</html> 

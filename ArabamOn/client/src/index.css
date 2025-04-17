@@ -1,0 +1,108 @@
+/* Temel stiller */
+:root {
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.hero-section {
+  background-color: #e9f0ff;
+  padding: 80px 0;
+  margin-bottom: 30px;
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+  background-color: var(--dark-color);
+  color: white;
+  padding: 40px 0;
+  margin-top: 50px;
+}
+
+/* Form stilleri */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Login/Register sayfaları */
+.auth-container {
+  max-width: 450px;
+  margin: 80px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard stilleri */
+.dashboard-container {
+  padding: 30px 0;
+}
+
+.dashboard-card {
+  border-left: 5px solid var(--primary-color);
+}
+
+/* Servis Sağlayıcı stilleri */
+.provider-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.provider-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.provider-rating {
+  color: #ffc107;
+}
+
+/* Randevu stilleri */
+.appointment-card {
+  border-left: 5px solid;
+}
+
+.appointment-card.pending {
+  border-color: #ffc107;
+}
+
+.appointment-card.confirmed {
+  border-color: #198754;
+}
+
+.appointment-card.completed {
+  border-color: #0d6efd;
+}
+
+.appointment-card.cancelled {
+  border-color: #dc3545;
+} 

@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşletme Paneli - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .dashboard-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--dark-color);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-logo {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #444;
+            background-color: #222;
+        }
+
+        .dashboard-logo a {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .dashboard-logo span {
+            color: var(--secondary-color);
+        }
+
+        .dashboard-menu {
+            padding: 1rem 0;
+        }
+
+        .dashboard-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: #ddd;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .dashboard-menu-item:hover,
+        .dashboard-menu-item.active {
+            background-color: #444;
+            color: white;
+            border-left-color: var(--secondary-color);
+        }
+
+        .dashboard-menu-item i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dashboard-menu-divider {
+            height: 1px;
+            background-color: #444;
+            margin: 1rem 0;
+        }
+
+        /* Main Content */
+        .dashboard-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 0;
+        }
+
+        .dashboard-header {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .dashboard-user {
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-user-info {
+            margin-right: 1rem;
+            text-align: right;
+        }
+
+        .dashboard-user-name {
+            font-weight: bold;
+        }
+
+        .dashboard-user-role {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .dashboard-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .dashboard-main {
+            padding: 2rem;
+        }
+
+        /* Status Cards */
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-card-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .status-card-info p {
+            color: #666;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .status-card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .status-card.appointments .status-card-icon {
+            background-color: rgba(0, 102, 204, 0.2);
+            color: var(--primary-color);
+        }
+
+        .status-card.today .status-card-icon {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+
+        .status-card.rating .status-card-icon {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-card.views .status-card-icon {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+
+        /* Data Panels */
+        .data-panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .data-panel-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-panel-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .data-panel-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .data-panel-body {
+            padding: 1.5rem;
+        }
+
+        /* Appointments */
+        .appointment-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .appointment-item {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-time {
+            width: 100px;
+            text-align: center;
+            padding-right: 1rem;
+            border-right: 1px solid #eee;
+        }
+
+        .appointment-hour {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .appointment-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .appointment-details {
+            flex: 1;
+            padding: 0 1rem;
+        }
+
+        .appointment-service {
+            font-weight: bold;
+            color: var(--dark-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .appointment-customer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.3rem;
+        }
+
+        .appointment-customer i {
+            color: #666;
+            margin-right: 0.5rem;
+        }
+
+        .appointment-notes {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        .appointment-status.confirmed {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+
+        .appointment-status.pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+
+        .appointment-status.canceled {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+
+        .appointment-status.completed {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+
+        /* Tables */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .dashboard-table th,
+        .dashboard-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dashboard-table th {
+            background-color: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .dashboard-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Forms */
+        .dashboard-form {
+            max-width: 800px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Services */
+        .service-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .service-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .service-price {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .service-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .service-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .service-actions {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0055b3;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid var(--info-color);
+        }
+
+        /* Reviews */
+        .review-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .review-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .review-user {
+            display: flex;
+            align-items: center;
+        }
+
+        .review-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.8rem;
+        }
+
+        .review-user-name {
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .review-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .review-rating {
+            color: var(--warning-color);
+            font-size: 1.2rem;
+        }
+
+        .review-content {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .review-service {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-sidebar {
+                width: 0;
+                transition: width 0.3s ease;
+            }
+
+            .dashboard-sidebar.open {
+                width: var(--sidebar-width);
+            }
+
+            .dashboard-content {
+                margin-left: 0;
+            }
+
+            .dashboard-header {
+                padding: 1rem;
+            }
+
+            .dashboard-main {
+                padding: 1rem;
+            }
+
+            .status-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="dashboard-logo">
+                <a href="/business-dashboard.html">Arabamon <span>İşletme</span></a>
+            </div>
+            <nav class="dashboard-menu">
+                <a href="#" class="dashboard-menu-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="appointments">
+                    <i class="fas fa-calendar-check"></i> Randevular
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="services">
+                    <i class="fas fa-tools"></i> Hizmetler
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="reviews">
+                    <i class="fas fa-star"></i> Değerlendirmeler
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="profile">
+                    <i class="fas fa-building"></i> İşletme Profili
+                </a>
+                <div class="dashboard-menu-divider"></div>
+                <a href="/business.html?id=1" class="dashboard-menu-item">
+                    <i class="fas fa-eye"></i> İşletme Sayfamı Gör
+                </a>
+                <a href="/" class="dashboard-menu-item">
+                    <i class="fas fa-home"></i> Siteye Dön
+                </a>
+                <a href="#" id="logout-btn" class="dashboard-menu-item">
+                    <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <header class="dashboard-header">
+                <button class="menu-toggle" id="menu-toggle" title="Menüyü Aç/Kapat">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="dashboard-title">İşletme Paneli</h1>
+                <div class="dashboard-user">
+                    <div class="dashboard-user-info">
+                        <div class="dashboard-user-name">Merkez Oto Servis</div>
+                        <div class="dashboard-user-role">İşletme Sahibi</div>
+                    </div>
+                    <div class="dashboard-avatar">M</div>
+                </div>
+            </header>
+
+            <div class="dashboard-main">
+                <!-- Dashboard Overview Section -->
+                <section class="dashboard-section active" id="dashboard-section">
+                    <div class="alert alert-success">
+                        Hoş geldiniz! 3 adet yeni randevu isteği bulunmaktadır.
+                    </div>
+
+                    <div class="status-cards">
+                        <div class="status-card appointments">
+                            <div class="status-card-info">
+                                <h3>24</h3>
+                                <p>Toplam Randevu</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                        </div>
+                        <div class="status-card today">
+                            <div class="status-card-info">
+                                <h3>5</h3>
+                                <p>Bugünkü Randevu</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="status-card rating">
+                            <div class="status-card-info">
+                                <h3>4.8</h3>
+                                <p>Değerlendirme</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="status-card views">
+                            <div class="status-card-info">
+                                <h3>132</h3>
+                                <p>Profil Görüntüleme</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title">Bugünkü Randevular</h2>
+                            <div class="data-panel-actions">
+                                <button class="btn btn-primary btn-sm">Tüm Randevular</button>
+                            </div>
+                        </div>
+                        <div class="data-panel-body">
+                            <ul class="appointment-list">
+                                <li class="appointment-item">
+                                    <div class="appointment-time">
+                                        <div class="appointment-hour">14:30</div>
+                                        <div class="appointment-date">30 Mart</div>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <div class="appointment-service">Yağ Değişimi</div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-user"></i> Ahmet Yılmaz
+                                        </div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-phone"></i> 0532 123 4567
+                                        </div>
+                                        <div class="appointment-notes">
+                                            <strong>Not:</strong> BMW 320i 2019 model
+                                        </div>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <span class="appointment-status confirmed">Onaylandı</span>
+                                        <button class="btn btn-sm btn-secondary">Detay</button>
+                                    </div>
+                                </li>
+                                <li class="appointment-item">
+                                    <div class="appointment-time">
+                                        <div class="appointment-hour">16:00</div>
+                                        <div class="appointment-date">30 Mart</div>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <div class="appointment-service">Fren Bakımı</div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-user"></i> Mehmet Demir
+                                        </div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-phone"></i> 0533 765 4321
+                                        </div>
+                                        <div class="appointment-notes">
+                                            <strong>Not:</strong> Audi A3 2020 model, ön frenler gıcırdıyor
+                                        </div>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <span class="appointment-status pending">Onay Bekliyor</span>
+                                        <button class="btn btn-sm btn-success">Onayla</button>
+                                        <button class="btn btn-sm btn-danger">Reddet</button>
+                                    </div>
+                                </li>
+                                <li class="appointment-item">
+                                    <div class="appointment-time">
+                                        <div class="appointment-hour">17:30</div>
+                                        <div class="appointment-date">30 Mart</div>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <div class="appointment-service">Akü Değişimi</div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-user"></i> Zeynep Kaya
+                                        </div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-phone"></i> 0535 987 6543
+                                        </div>
+                                        <div class="appointment-notes">
+                                            <strong>Not:</strong> Renault Clio 2017 model, akü şarj tutmuyor
+                                        </div>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <span class="appointment-status confirmed">Onaylandı</span>
+                                        <button class="btn btn-sm btn-secondary">Detay</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title">Son Değerlendirmeler</h2>
+                            <div class="data-panel-actions">
+                                <button class="btn btn-primary btn-sm">Tüm Değerlendirmeler</button>
+                            </div>
+                        </div>
+                        <div class="data-panel-body">
+                            <div class="review-list">
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="review-user">
+                                            <div class="review-user-avatar">A</div>
+                                            <div>
+                                                <div class="review-user-name">Ahmet Yılmaz</div>
+                                                <div class="review-date">28 Mart 2023</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="review-content">
+                                        Çok profesyonel bir hizmet aldım. Aracım zamanında hazır oldu ve herhangi bir sorun yaşamadım. Teşekkürler!
+                                    </div>
+                                    <div class="review-service">
+                                        <i class="fas fa-tools"></i> Yağ Değişimi
+                                    </div>
+                                </div>
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="review-user">
+                                            <div class="review-user-avatar">Z</div>
+                                            <div>
+                                                <div class="review-user-name">Zeynep Kaya</div>
+                                                <div class="review-date">25 Mart 2023</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="review-content">
+                                        Bakım kalitesi çok iyi, fiyatlar da uygun. Tek eksik bekleme alanının konforunun biraz daha artırılabilir olması.
+                                    </div>
+                                    <div class="review-service">
+                                        <i class="fas fa-tools"></i> Periyodik Bakım
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Other sections would be added here -->
+                <section class="dashboard-section" id="appointments-section">
+                    <h2>Randevular Yönetimi</h2>
+                    <p>Bu bölüm geliştirme aşamasındadır.</p>
+                </section>
+                
+                <section class="dashboard-section" id="services-section">
+                    <h2>Hizmetler Yönetimi</h2>
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title">Hizmetleriniz</h2>
+                            <div class="data-panel-actions">
+                                <button class="btn btn-primary btn-sm">Yeni Hizmet Ekle</button>
+                            </div>
+                        </div>
+                        <div class="data-panel-body">
+                            <div class="service-list">
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Yağ Değişimi</h3>
+                                        <div class="service-price">750 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Motor yağı ve filtre değişimi. En kaliteli yağlar kullanılır.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 30 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 18 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Periyodik Bakım</h3>
+                                        <div class="service-price">1500 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Aracınızın periyodik bakımı. Filtrelerin değişimi, sıvıların kontrolü ve tamamlanması.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 120 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 12 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Fren Bakımı</h3>
+                                        <div class="service-price">1200 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Fren balataları değişimi ve fren hidroliği kontrolü.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 60 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 8 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Akü Değişimi</h3>
+                                        <div class="service-price">2000 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Eski akünüzün yenisiyle değiştirilmesi ve şarj sistemi kontrolü.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 20 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 5 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="dashboard-section" id="reviews-section">
+                    <h2>Değerlendirmeler</h2>
+                    <p>Bu bölüm geliştirme aşamasındadır.</p>
+                </section>
+                
+                <section class="dashboard-section" id="profile-section">
+                    <h2>İşletme Profilim</h2>
+                    <p>Bu bölüm geliştirme aşamasındadır.</p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Menu Toggle
+            const menuItems = document.querySelectorAll('.dashboard-menu-item');
+            menuItems.forEach(item => {
+                if (item.id !== 'logout-btn') {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Remove active class from all menu items
+                        menuItems.forEach(mi => mi.classList.remove('active'));
+                        
+                        // Add active class to clicked menu item
+                        this.classList.add('active');
+                        
+                        // Show corresponding section
+                        const sectionId = this.getAttribute('data-section');
+                        if (sectionId) {
+                            const sections = document.querySelectorAll('.dashboard-section');
+                            sections.forEach(section => {
+                                section.classList.remove('active');
+                            });
+                            
+                            document.getElementById(`${sectionId}-section`).classList.add('active');
+                        }
+                    });
+                }
+            });
+            
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                });
+            }
+            
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                // Normalde çıkış yapma API'si çağrılır
+                // api.auth.logout();
+                alert('Çıkış yapılıyor...');
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 1000);
+            });
+            
+            // Demo veri yükleme simülasyonu
+            // Gerçek uygulamada burada API çağrıları olurdu
+            console.log('İşletme panel verileri yükleniyor...');
+        });
+    </script>
+</body>
+</html> 
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İşletme Paneli - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .dashboard-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--dark-color);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-logo {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #444;
+            background-color: #222;
+        }
+
+        .dashboard-logo a {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .dashboard-logo span {
+            color: var(--secondary-color);
+        }
+
+        .dashboard-menu {
+            padding: 1rem 0;
+        }
+
+        .dashboard-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: #ddd;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .dashboard-menu-item:hover,
+        .dashboard-menu-item.active {
+            background-color: #444;
+            color: white;
+            border-left-color: var(--secondary-color);
+        }
+
+        .dashboard-menu-item i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dashboard-menu-divider {
+            height: 1px;
+            background-color: #444;
+            margin: 1rem 0;
+        }
+
+        /* Main Content */
+        .dashboard-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 0;
+        }
+
+        .dashboard-header {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .dashboard-user {
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-user-info {
+            margin-right: 1rem;
+            text-align: right;
+        }
+
+        .dashboard-user-name {
+            font-weight: bold;
+        }
+
+        .dashboard-user-role {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .dashboard-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .dashboard-main {
+            padding: 2rem;
+        }
+
+        /* Status Cards */
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-card-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .status-card-info p {
+            color: #666;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .status-card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .status-card.appointments .status-card-icon {
+            background-color: rgba(0, 102, 204, 0.2);
+            color: var(--primary-color);
+        }
+
+        .status-card.today .status-card-icon {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+
+        .status-card.rating .status-card-icon {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+
+        .status-card.views .status-card-icon {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+
+        /* Data Panels */
+        .data-panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .data-panel-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-panel-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .data-panel-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .data-panel-body {
+            padding: 1.5rem;
+        }
+
+        /* Appointments */
+        .appointment-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .appointment-item {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-time {
+            width: 100px;
+            text-align: center;
+            padding-right: 1rem;
+            border-right: 1px solid #eee;
+        }
+
+        .appointment-hour {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .appointment-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .appointment-details {
+            flex: 1;
+            padding: 0 1rem;
+        }
+
+        .appointment-service {
+            font-weight: bold;
+            color: var(--dark-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .appointment-customer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.3rem;
+        }
+
+        .appointment-customer i {
+            color: #666;
+            margin-right: 0.5rem;
+        }
+
+        .appointment-notes {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        .appointment-status.confirmed {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success-color);
+        }
+
+        .appointment-status.pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--warning-color);
+        }
+
+        .appointment-status.canceled {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+
+        .appointment-status.completed {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: var(--info-color);
+        }
+
+        /* Tables */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .dashboard-table th,
+        .dashboard-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dashboard-table th {
+            background-color: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .dashboard-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Forms */
+        .dashboard-form {
+            max-width: 800px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Services */
+        .service-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .service-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .service-price {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .service-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .service-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .service-actions {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0055b3;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid var(--info-color);
+        }
+
+        /* Reviews */
+        .review-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .review-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .review-user {
+            display: flex;
+            align-items: center;
+        }
+
+        .review-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.8rem;
+        }
+
+        .review-user-name {
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .review-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .review-rating {
+            color: var(--warning-color);
+            font-size: 1.2rem;
+        }
+
+        .review-content {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .review-service {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-sidebar {
+                width: 0;
+                transition: width 0.3s ease;
+            }
+
+            .dashboard-sidebar.open {
+                width: var(--sidebar-width);
+            }
+
+            .dashboard-content {
+                margin-left: 0;
+            }
+
+            .dashboard-header {
+                padding: 1rem;
+            }
+
+            .dashboard-main {
+                padding: 1rem;
+            }
+
+            .status-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="dashboard-logo">
+                <a href="/business-dashboard.html">Arabamon <span>İşletme</span></a>
+            </div>
+            <nav class="dashboard-menu">
+                <a href="#" class="dashboard-menu-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="appointments">
+                    <i class="fas fa-calendar-check"></i> Randevular
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="services">
+                    <i class="fas fa-tools"></i> Hizmetler
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="reviews">
+                    <i class="fas fa-star"></i> Değerlendirmeler
+                </a>
+                <a href="#" class="dashboard-menu-item" data-section="profile">
+                    <i class="fas fa-building"></i> İşletme Profili
+                </a>
+                <div class="dashboard-menu-divider"></div>
+                <a href="/business.html?id=1" class="dashboard-menu-item">
+                    <i class="fas fa-eye"></i> İşletme Sayfamı Gör
+                </a>
+                <a href="/" class="dashboard-menu-item">
+                    <i class="fas fa-home"></i> Siteye Dön
+                </a>
+                <a href="#" id="logout-btn" class="dashboard-menu-item">
+                    <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <header class="dashboard-header">
+                <button class="menu-toggle" id="menu-toggle" title="Menüyü Aç/Kapat">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="dashboard-title">İşletme Paneli</h1>
+                <div class="dashboard-user">
+                    <div class="dashboard-user-info">
+                        <div class="dashboard-user-name">Merkez Oto Servis</div>
+                        <div class="dashboard-user-role">İşletme Sahibi</div>
+                    </div>
+                    <div class="dashboard-avatar">M</div>
+                </div>
+            </header>
+
+            <div class="dashboard-main">
+                <!-- Dashboard Overview Section -->
+                <section class="dashboard-section active" id="dashboard-section">
+                    <div class="alert alert-success">
+                        Hoş geldiniz! 3 adet yeni randevu isteği bulunmaktadır.
+                    </div>
+
+                    <div class="status-cards">
+                        <div class="status-card appointments">
+                            <div class="status-card-info">
+                                <h3>24</h3>
+                                <p>Toplam Randevu</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                        </div>
+                        <div class="status-card today">
+                            <div class="status-card-info">
+                                <h3>5</h3>
+                                <p>Bugünkü Randevu</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="status-card rating">
+                            <div class="status-card-info">
+                                <h3>4.8</h3>
+                                <p>Değerlendirme</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="status-card views">
+                            <div class="status-card-info">
+                                <h3>132</h3>
+                                <p>Profil Görüntüleme</p>
+                            </div>
+                            <div class="status-card-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title">Bugünkü Randevular</h2>
+                            <div class="data-panel-actions">
+                                <button class="btn btn-primary btn-sm">Tüm Randevular</button>
+                            </div>
+                        </div>
+                        <div class="data-panel-body">
+                            <ul class="appointment-list">
+                                <li class="appointment-item">
+                                    <div class="appointment-time">
+                                        <div class="appointment-hour">14:30</div>
+                                        <div class="appointment-date">30 Mart</div>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <div class="appointment-service">Yağ Değişimi</div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-user"></i> Ahmet Yılmaz
+                                        </div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-phone"></i> 0532 123 4567
+                                        </div>
+                                        <div class="appointment-notes">
+                                            <strong>Not:</strong> BMW 320i 2019 model
+                                        </div>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <span class="appointment-status confirmed">Onaylandı</span>
+                                        <button class="btn btn-sm btn-secondary">Detay</button>
+                                    </div>
+                                </li>
+                                <li class="appointment-item">
+                                    <div class="appointment-time">
+                                        <div class="appointment-hour">16:00</div>
+                                        <div class="appointment-date">30 Mart</div>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <div class="appointment-service">Fren Bakımı</div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-user"></i> Mehmet Demir
+                                        </div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-phone"></i> 0533 765 4321
+                                        </div>
+                                        <div class="appointment-notes">
+                                            <strong>Not:</strong> Audi A3 2020 model, ön frenler gıcırdıyor
+                                        </div>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <span class="appointment-status pending">Onay Bekliyor</span>
+                                        <button class="btn btn-sm btn-success">Onayla</button>
+                                        <button class="btn btn-sm btn-danger">Reddet</button>
+                                    </div>
+                                </li>
+                                <li class="appointment-item">
+                                    <div class="appointment-time">
+                                        <div class="appointment-hour">17:30</div>
+                                        <div class="appointment-date">30 Mart</div>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <div class="appointment-service">Akü Değişimi</div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-user"></i> Zeynep Kaya
+                                        </div>
+                                        <div class="appointment-customer">
+                                            <i class="fas fa-phone"></i> 0535 987 6543
+                                        </div>
+                                        <div class="appointment-notes">
+                                            <strong>Not:</strong> Renault Clio 2017 model, akü şarj tutmuyor
+                                        </div>
+                                    </div>
+                                    <div class="appointment-actions">
+                                        <span class="appointment-status confirmed">Onaylandı</span>
+                                        <button class="btn btn-sm btn-secondary">Detay</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title">Son Değerlendirmeler</h2>
+                            <div class="data-panel-actions">
+                                <button class="btn btn-primary btn-sm">Tüm Değerlendirmeler</button>
+                            </div>
+                        </div>
+                        <div class="data-panel-body">
+                            <div class="review-list">
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="review-user">
+                                            <div class="review-user-avatar">A</div>
+                                            <div>
+                                                <div class="review-user-name">Ahmet Yılmaz</div>
+                                                <div class="review-date">28 Mart 2023</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="review-content">
+                                        Çok profesyonel bir hizmet aldım. Aracım zamanında hazır oldu ve herhangi bir sorun yaşamadım. Teşekkürler!
+                                    </div>
+                                    <div class="review-service">
+                                        <i class="fas fa-tools"></i> Yağ Değişimi
+                                    </div>
+                                </div>
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="review-user">
+                                            <div class="review-user-avatar">Z</div>
+                                            <div>
+                                                <div class="review-user-name">Zeynep Kaya</div>
+                                                <div class="review-date">25 Mart 2023</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <div class="review-content">
+                                        Bakım kalitesi çok iyi, fiyatlar da uygun. Tek eksik bekleme alanının konforunun biraz daha artırılabilir olması.
+                                    </div>
+                                    <div class="review-service">
+                                        <i class="fas fa-tools"></i> Periyodik Bakım
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Other sections would be added here -->
+                <section class="dashboard-section" id="appointments-section">
+                    <h2>Randevular Yönetimi</h2>
+                    <p>Bu bölüm geliştirme aşamasındadır.</p>
+                </section>
+                
+                <section class="dashboard-section" id="services-section">
+                    <h2>Hizmetler Yönetimi</h2>
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title">Hizmetleriniz</h2>
+                            <div class="data-panel-actions">
+                                <button class="btn btn-primary btn-sm">Yeni Hizmet Ekle</button>
+                            </div>
+                        </div>
+                        <div class="data-panel-body">
+                            <div class="service-list">
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Yağ Değişimi</h3>
+                                        <div class="service-price">750 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Motor yağı ve filtre değişimi. En kaliteli yağlar kullanılır.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 30 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 18 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Periyodik Bakım</h3>
+                                        <div class="service-price">1500 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Aracınızın periyodik bakımı. Filtrelerin değişimi, sıvıların kontrolü ve tamamlanması.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 120 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 12 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Fren Bakımı</h3>
+                                        <div class="service-price">1200 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Fren balataları değişimi ve fren hidroliği kontrolü.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 60 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 8 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <h3 class="service-title">Akü Değişimi</h3>
+                                        <div class="service-price">2000 ₺</div>
+                                    </div>
+                                    <div class="service-description">
+                                        Eski akünüzün yenisiyle değiştirilmesi ve şarj sistemi kontrolü.
+                                    </div>
+                                    <div class="service-details">
+                                        <span><i class="fas fa-clock"></i> 20 dakika</span>
+                                        <span><i class="fas fa-calendar-check"></i> 5 kez alındı</span>
+                                    </div>
+                                    <div class="service-actions">
+                                        <button class="btn btn-sm btn-secondary">Düzenle</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="dashboard-section" id="reviews-section">
+                    <h2>Değerlendirmeler</h2>
+                    <p>Bu bölüm geliştirme aşamasındadır.</p>
+                </section>
+                
+                <section class="dashboard-section" id="profile-section">
+                    <h2>İşletme Profilim</h2>
+                    <p>Bu bölüm geliştirme aşamasındadır.</p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Menu Toggle
+            const menuItems = document.querySelectorAll('.dashboard-menu-item');
+            menuItems.forEach(item => {
+                if (item.id !== 'logout-btn') {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Remove active class from all menu items
+                        menuItems.forEach(mi => mi.classList.remove('active'));
+                        
+                        // Add active class to clicked menu item
+                        this.classList.add('active');
+                        
+                        // Show corresponding section
+                        const sectionId = this.getAttribute('data-section');
+                        if (sectionId) {
+                            const sections = document.querySelectorAll('.dashboard-section');
+                            sections.forEach(section => {
+                                section.classList.remove('active');
+                            });
+                            
+                            document.getElementById(`${sectionId}-section`).classList.add('active');
+                        }
+                    });
+                }
+            });
+            
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                });
+            }
+            
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                // Normalde çıkış yapma API'si çağrılır
+                // api.auth.logout();
+                alert('Çıkış yapılıyor...');
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 1000);
+            });
+            
+            // Demo veri yükleme simülasyonu
+            // Gerçek uygulamada burada API çağrıları olurdu
+            console.log('İşletme panel verileri yükleniyor...');
+        });
+    </script>
+</body>
+</html> 

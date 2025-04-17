@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Profili - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --text-color: #333;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-nav li {
+            margin-left: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+
+        .profile-name {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            text-align: center;
+            color: #777;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: background-color 0.2s;
+        }
+
+        .profile-menu a:hover,
+        .profile-menu a.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .profile-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            margin-top: 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1.5rem;
+        }
+
+        .appointments {
+            margin-bottom: 2rem;
+        }
+
+        .appointment-card {
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-date {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-service {
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius);
+            font-size: 0.85rem;
+        }
+
+        .status-pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .status-confirmed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-cancelled {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .appointment-actions button {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .no-appointments {
+            background-color: var(--light-color);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #a93226;
+        }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alerts-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 300px;
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .alert .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: currentColor;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">Arabamon</a>
+        <ul class="navbar-nav">
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><a href="/businesses.html">İşletmeler</a></li>
+            <li><a href="/about.html">Hakkımızda</a></li>
+            <!-- Dinamik olarak gösterilecek bağlantılar -->
+            <li id="navLogin"><a href="/login.html">Giriş Yap</a></li>
+            <li id="navRegister"><a href="/register.html">Kayıt Ol</a></li>
+            <li id="navProfile" style="display: none;"><a href="/profile.html">Profilim</a></li>
+            <li id="navDashboard" style="display: none;"><a href="/admin-dashboard.html">Kontrol Paneli</a></li>
+            <li id="navLogout" style="display: none;"><a href="#">Çıkış Yap</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-avatar" id="userAvatar">
+                    <span id="userInitials">AA</span>
+                </div>
+                <h2 class="profile-name" id="userName">Ad Soyad</h2>
+                <p class="profile-email" id="userEmail">kullanici@ornek.com</p>
+                <ul class="profile-menu">
+                    <li><a href="#" class="active" data-tab="appointments">Randevularım</a></li>
+                    <li><a href="#" data-tab="profile">Profil Bilgilerim</a></li>
+                    <li><a href="#" data-tab="password">Şifre Değiştir</a></li>
+                    <li><a href="#" data-tab="reviews">Değerlendirmelerim</a></li>
+                </ul>
+            </div>
+
+            <div class="profile-content">
+                <!-- Randevular Sekmesi -->
+                <div class="tab-content active" id="appointments-tab">
+                    <h3 class="section-title">Randevularım</h3>
+                    <div class="appointments" id="appointmentsList">
+                        <div class="loading-spinner" id="appointmentsLoading">
+                            <div class="spinner"></div>
+                            <p>Randevular yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profil Bilgileri Sekmesi -->
+                <div class="tab-content" id="profile-tab">
+                    <h3 class="section-title">Profil Bilgilerim</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="name">Ad Soyad</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-posta</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefon</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <button type="submit">Bilgileri Güncelle</button>
+                    </form>
+                </div>
+
+                <!-- Şifre Değiştirme Sekmesi -->
+                <div class="tab-content" id="password-tab">
+                    <h3 class="section-title">Şifre Değiştir</h3>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Mevcut Şifre</label>
+                            <input type="password" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Yeni Şifre</label>
+                            <input type="password" id="newPassword" name="newPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Yeni Şifre (Tekrar)</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                        </div>
+                        <button type="submit">Şifreyi Değiştir</button>
+                    </form>
+                </div>
+
+                <!-- Değerlendirmeler Sekmesi -->
+                <div class="tab-content" id="reviews-tab">
+                    <h3 class="section-title">Değerlendirmelerim</h3>
+                    <div id="reviewsList">
+                        <div class="loading-spinner" id="reviewsLoading">
+                            <div class="spinner"></div>
+                            <p>Değerlendirmeler yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            <p>
+                <a href="/about.html" style="color: white;">Hakkımızda</a> |
+                <a href="/contact.html" style="color: white;">İletişim</a> |
+                <a href="/privacy.html" style="color: white;">Gizlilik Politikası</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kullanıcı giriş kontrol
+            if (!api.auth.isLoggedIn()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Kullanıcı bilgilerini yükle
+            loadUserProfile();
+            
+            // Sekme değiştirme işlevselliği
+            const tabLinks = document.querySelectorAll('.profile-menu a');
+            tabLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = link.getAttribute('data-tab');
+                    
+                    // Aktif sekme sınıflarını kaldır
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Seçilen sekmeyi etkinleştir
+                    link.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // İçeriği yükle
+                    if (tabId === 'appointments' && !document.getElementById('appointmentsList').innerHTML.trim()) {
+                        loadAppointments();
+                    } else if (tabId === 'reviews' && !document.getElementById('reviewsList').innerHTML.trim()) {
+                        loadReviews();
+                    }
+                });
+            });
+            
+            // Randevuları yükle (varsayılan sekme)
+            loadAppointments();
+            
+            // Profil formu gönderimi
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                updateProfile();
+            });
+            
+            // Şifre formu gönderimi
+            document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                updatePassword();
+            });
+        });
+        
+        // Kullanıcı profilini yükle
+        async function loadUserProfile() {
+            try {
+                const user = api.getCurrentUser();
+                
+                if (user) {
+                    // Profil formunu doldur
+                    document.getElementById('name').value = user.name || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('phone').value = user.phone || '';
+                    
+                    // Profil bilgilerini göster
+                    document.getElementById('userName').textContent = user.name || 'Kullanıcı';
+                    document.getElementById('userEmail').textContent = user.email || '';
+                    
+                    // Kullanıcı avatar baş harfleri
+                    if (user.name) {
+                        const nameParts = user.name.split(' ');
+                        let initials = nameParts[0].charAt(0).toUpperCase();
+                        
+                        if (nameParts.length > 1) {
+                            initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+                        }
+                        
+                        document.getElementById('userInitials').textContent = initials;
+                    }
+                }
+            } catch (error) {
+                console.error('Profil yüklenirken hata:', error);
+                showAlert('Profil bilgileri yüklenemedi: ' + error.message);
+            }
+        }
+        
+        // Kullanıcının randevularını yükle
+        async function loadAppointments() {
+            const appointmentsList = document.getElementById('appointmentsList');
+            const loadingEl = document.getElementById('appointmentsLoading');
+            
+            try {
+                loadingEl.style.display = 'block';
+                const response = await api.appointments.getAll();
+                loadingEl.style.display = 'none';
+                
+                if (response.data && response.data.length > 0) {
+                    let html = '';
+                    
+                    response.data.forEach(appointment => {
+                        let statusClass = '';
+                        let statusText = '';
+                        
+                        switch (appointment.status) {
+                            case 'beklemede':
+                                statusClass = 'status-pending';
+                                statusText = 'Beklemede';
+                                break;
+                            case 'onaylandı':
+                                statusClass = 'status-confirmed';
+                                statusText = 'Onaylandı';
+                                break;
+                            case 'iptal':
+                                statusClass = 'status-cancelled';
+                                statusText = 'İptal Edildi';
+                                break;
+                            default:
+                                statusClass = 'status-pending';
+                                statusText = appointment.status;
+                        }
+                        
+                        html += `
+                            <div class="appointment-card">
+                                <div class="appointment-info">
+                                    <div class="appointment-date">${formatDate(appointment.date)} - ${appointment.time}</div>
+                                    <div class="appointment-service">${appointment.serviceName || 'Bilinmeyen Hizmet'}</div>
+                                    <div class="appointment-business">${appointment.businessName || 'Bilinmeyen İşletme'}</div>
+                                    <div class="appointment-status ${statusClass}">${statusText}</div>
+                                </div>
+                                <div class="appointment-actions">
+                                    ${appointment.status !== 'iptal' ? 
+                                        `<button onclick="cancelAppointment(${appointment.id})">İptal Et</button>` : 
+                                        ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    appointmentsList.innerHTML = html;
+                } else {
+                    appointmentsList.innerHTML = `
+                        <div class="no-appointments">
+                            <p>Henüz randevunuz bulunmamaktadır.</p>
+                            <p><a href="/businesses.html">İşletmeler sayfasından</a> randevu oluşturabilirsiniz.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Randevular yüklenirken hata:', error);
+                loadingEl.style.display = 'none';
+                appointmentsList.innerHTML = `
+                    <div class="no-appointments">
+                        <p>Randevular yüklenirken bir hata oluştu.</p>
+                        <p>Lütfen daha sonra tekrar deneyin.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Kullanıcının değerlendirmelerini yükle
+        async function loadReviews() {
+            const reviewsList = document.getElementById('reviewsList');
+            const loadingEl = document.getElementById('reviewsLoading');
+            
+            try {
+                loadingEl.style.display = 'block';
+                const response = await api.reviews.getUserReviews();
+                loadingEl.style.display = 'none';
+                
+                if (response.data && response.data.length > 0) {
+                    let html = '';
+                    
+                    response.data.forEach(review => {
+                        // Yıldız değerlendirmesi
+                        let stars = '';
+                        for (let i = 1; i <= 5; i++) {
+                            stars += `<span style="color: ${i <= review.rating ? 'gold' : '#ddd'}">★</span>`;
+                        }
+                        
+                        html += `
+                            <div class="review-card" style="margin-bottom: 1rem; padding: 1rem; background-color: #f9f9f9; border-radius: 4px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <div>
+                                        <strong style="display: block;">${review.businessName || 'Bilinmeyen İşletme'}</strong>
+                                        <div style="font-size: 1.25rem;">${stars}</div>
+                                    </div>
+                                    <div style="color: #777;">${formatDate(review.date || review.createdAt)}</div>
+                                </div>
+                                <p style="margin: 0.5rem 0;">${review.comment || ''}</p>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                                    <button onclick="editReview(${review.id})" style="background-color: #3498db; margin-right: 0.5rem;">Düzenle</button>
+                                    <button onclick="deleteReview(${review.id})" style="background-color: #e74c3c;">Sil</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    reviewsList.innerHTML = html;
+                } else {
+                    reviewsList.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; background-color: #f9f9f9; border-radius: 4px;">
+                            <p>Henüz değerlendirmeniz bulunmamaktadır.</p>
+                            <p>Hizmet aldığınız işletmelere değerlendirme yapabilirsiniz.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Değerlendirmeler yüklenirken hata:', error);
+                loadingEl.style.display = 'none';
+                reviewsList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; background-color: #f9f9f9; border-radius: 4px;">
+                        <p>Değerlendirmeler yüklenirken bir hata oluştu.</p>
+                        <p>Lütfen daha sonra tekrar deneyin.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Profil bilgilerini güncelle
+        async function updateProfile() {
+            const nameEl = document.getElementById('name');
+            const emailEl = document.getElementById('email');
+            const phoneEl = document.getElementById('phone');
+            
+            const userData = {
+                name: nameEl.value.trim(),
+                email: emailEl.value.trim(),
+                phone: phoneEl.value.trim()
+            };
+            
+            try {
+                const response = await api.auth.updateProfile(userData);
+                
+                if (response.success) {
+                    showAlert('Profil bilgileriniz başarıyla güncellendi.', 'success');
+                    loadUserProfile(); // Profil bilgilerini yeniden yükle
+                } else {
+                    showAlert('Profil güncellenirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Profil güncellenirken hata:', error);
+                showAlert('Profil güncellenirken bir hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Şifre değiştir
+        async function updatePassword() {
+            const currentPasswordEl = document.getElementById('currentPassword');
+            const newPasswordEl = document.getElementById('newPassword');
+            const confirmPasswordEl = document.getElementById('confirmPassword');
+            
+            // Yeni şifre doğrulama kontrolü
+            if (newPasswordEl.value !== confirmPasswordEl.value) {
+                showAlert('Yeni şifreler eşleşmiyor.');
+                return;
+            }
+            
+            const passwordData = {
+                currentPassword: currentPasswordEl.value,
+                newPassword: newPasswordEl.value
+            };
+            
+            try {
+                const response = await api.auth.updatePassword(passwordData);
+                
+                if (response.success) {
+                    showAlert('Şifreniz başarıyla değiştirildi.', 'success');
+                    currentPasswordEl.value = '';
+                    newPasswordEl.value = '';
+                    confirmPasswordEl.value = '';
+                } else {
+                    showAlert('Şifre değiştirilirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Şifre güncellenirken hata:', error);
+                showAlert('Şifre güncellenirken bir hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Randevu iptal et
+        async function cancelAppointment(id) {
+            if (!confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')) {
+                return;
+            }
+            
+            try {
+                const reason = prompt('İptal sebebinizi yazabilir misiniz? (İsteğe bağlı)') || '';
+                const response = await api.appointments.cancel(id, reason);
+                
+                if (response.success) {
+                    showAlert('Randevunuz başarıyla iptal edildi.', 'success');
+                    loadAppointments(); // Randevuları yeniden yükle
+                } else {
+                    showAlert('Randevu iptal edilirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Randevu iptal edilirken hata:', error);
+                showAlert('Randevu iptal edilirken bir hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Değerlendirme düzenle
+        function editReview(id) {
+            // Bu fonksiyon bir modal açarak değerlendirme düzenleme işlemini yapabilir
+            showAlert('Değerlendirme düzenleme yakında eklenecek.');
+        }
+        
+        // Değerlendirme sil
+        async function deleteReview(id) {
+            if (!confirm('Bu değerlendirmeyi silmek istediğinize emin misiniz?')) {
+                return;
+            }
+            
+            try {
+                const response = await api.reviews.delete(id);
+                
+                if (response.success) {
+                    showAlert('Değerlendirmeniz başarıyla silindi.', 'success');
+                    loadReviews(); // Değerlendirmeleri yeniden yükle
+                } else {
+                    showAlert('Değerlendirme silinirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Değerlendirme silinirken hata:', error);
+                showAlert('Değerlendirme silinirken bir hata oluştu: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Profili - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --text-color: #333;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-nav li {
+            margin-left: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-sidebar {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-color);
+            overflow: hidden;
+        }
+
+        .profile-name {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            text-align: center;
+            color: #777;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: background-color 0.2s;
+        }
+
+        .profile-menu a:hover,
+        .profile-menu a.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .profile-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            margin-top: 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1.5rem;
+        }
+
+        .appointments {
+            margin-bottom: 2rem;
+        }
+
+        .appointment-card {
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-date {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-service {
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius);
+            font-size: 0.85rem;
+        }
+
+        .status-pending {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .status-confirmed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-cancelled {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .appointment-actions button {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .no-appointments {
+            background-color: var(--light-color);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #a93226;
+        }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alerts-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 300px;
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .alert .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: currentColor;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">Arabamon</a>
+        <ul class="navbar-nav">
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><a href="/businesses.html">İşletmeler</a></li>
+            <li><a href="/about.html">Hakkımızda</a></li>
+            <!-- Dinamik olarak gösterilecek bağlantılar -->
+            <li id="navLogin"><a href="/login.html">Giriş Yap</a></li>
+            <li id="navRegister"><a href="/register.html">Kayıt Ol</a></li>
+            <li id="navProfile" style="display: none;"><a href="/profile.html">Profilim</a></li>
+            <li id="navDashboard" style="display: none;"><a href="/admin-dashboard.html">Kontrol Paneli</a></li>
+            <li id="navLogout" style="display: none;"><a href="#">Çıkış Yap</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-avatar" id="userAvatar">
+                    <span id="userInitials">AA</span>
+                </div>
+                <h2 class="profile-name" id="userName">Ad Soyad</h2>
+                <p class="profile-email" id="userEmail">kullanici@ornek.com</p>
+                <ul class="profile-menu">
+                    <li><a href="#" class="active" data-tab="appointments">Randevularım</a></li>
+                    <li><a href="#" data-tab="profile">Profil Bilgilerim</a></li>
+                    <li><a href="#" data-tab="password">Şifre Değiştir</a></li>
+                    <li><a href="#" data-tab="reviews">Değerlendirmelerim</a></li>
+                </ul>
+            </div>
+
+            <div class="profile-content">
+                <!-- Randevular Sekmesi -->
+                <div class="tab-content active" id="appointments-tab">
+                    <h3 class="section-title">Randevularım</h3>
+                    <div class="appointments" id="appointmentsList">
+                        <div class="loading-spinner" id="appointmentsLoading">
+                            <div class="spinner"></div>
+                            <p>Randevular yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profil Bilgileri Sekmesi -->
+                <div class="tab-content" id="profile-tab">
+                    <h3 class="section-title">Profil Bilgilerim</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="name">Ad Soyad</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-posta</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefon</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <button type="submit">Bilgileri Güncelle</button>
+                    </form>
+                </div>
+
+                <!-- Şifre Değiştirme Sekmesi -->
+                <div class="tab-content" id="password-tab">
+                    <h3 class="section-title">Şifre Değiştir</h3>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Mevcut Şifre</label>
+                            <input type="password" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Yeni Şifre</label>
+                            <input type="password" id="newPassword" name="newPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Yeni Şifre (Tekrar)</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                        </div>
+                        <button type="submit">Şifreyi Değiştir</button>
+                    </form>
+                </div>
+
+                <!-- Değerlendirmeler Sekmesi -->
+                <div class="tab-content" id="reviews-tab">
+                    <h3 class="section-title">Değerlendirmelerim</h3>
+                    <div id="reviewsList">
+                        <div class="loading-spinner" id="reviewsLoading">
+                            <div class="spinner"></div>
+                            <p>Değerlendirmeler yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            <p>
+                <a href="/about.html" style="color: white;">Hakkımızda</a> |
+                <a href="/contact.html" style="color: white;">İletişim</a> |
+                <a href="/privacy.html" style="color: white;">Gizlilik Politikası</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kullanıcı giriş kontrol
+            if (!api.auth.isLoggedIn()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Kullanıcı bilgilerini yükle
+            loadUserProfile();
+            
+            // Sekme değiştirme işlevselliği
+            const tabLinks = document.querySelectorAll('.profile-menu a');
+            tabLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = link.getAttribute('data-tab');
+                    
+                    // Aktif sekme sınıflarını kaldır
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Seçilen sekmeyi etkinleştir
+                    link.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // İçeriği yükle
+                    if (tabId === 'appointments' && !document.getElementById('appointmentsList').innerHTML.trim()) {
+                        loadAppointments();
+                    } else if (tabId === 'reviews' && !document.getElementById('reviewsList').innerHTML.trim()) {
+                        loadReviews();
+                    }
+                });
+            });
+            
+            // Randevuları yükle (varsayılan sekme)
+            loadAppointments();
+            
+            // Profil formu gönderimi
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                updateProfile();
+            });
+            
+            // Şifre formu gönderimi
+            document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                updatePassword();
+            });
+        });
+        
+        // Kullanıcı profilini yükle
+        async function loadUserProfile() {
+            try {
+                const user = api.getCurrentUser();
+                
+                if (user) {
+                    // Profil formunu doldur
+                    document.getElementById('name').value = user.name || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('phone').value = user.phone || '';
+                    
+                    // Profil bilgilerini göster
+                    document.getElementById('userName').textContent = user.name || 'Kullanıcı';
+                    document.getElementById('userEmail').textContent = user.email || '';
+                    
+                    // Kullanıcı avatar baş harfleri
+                    if (user.name) {
+                        const nameParts = user.name.split(' ');
+                        let initials = nameParts[0].charAt(0).toUpperCase();
+                        
+                        if (nameParts.length > 1) {
+                            initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+                        }
+                        
+                        document.getElementById('userInitials').textContent = initials;
+                    }
+                }
+            } catch (error) {
+                console.error('Profil yüklenirken hata:', error);
+                showAlert('Profil bilgileri yüklenemedi: ' + error.message);
+            }
+        }
+        
+        // Kullanıcının randevularını yükle
+        async function loadAppointments() {
+            const appointmentsList = document.getElementById('appointmentsList');
+            const loadingEl = document.getElementById('appointmentsLoading');
+            
+            try {
+                loadingEl.style.display = 'block';
+                const response = await api.appointments.getAll();
+                loadingEl.style.display = 'none';
+                
+                if (response.data && response.data.length > 0) {
+                    let html = '';
+                    
+                    response.data.forEach(appointment => {
+                        let statusClass = '';
+                        let statusText = '';
+                        
+                        switch (appointment.status) {
+                            case 'beklemede':
+                                statusClass = 'status-pending';
+                                statusText = 'Beklemede';
+                                break;
+                            case 'onaylandı':
+                                statusClass = 'status-confirmed';
+                                statusText = 'Onaylandı';
+                                break;
+                            case 'iptal':
+                                statusClass = 'status-cancelled';
+                                statusText = 'İptal Edildi';
+                                break;
+                            default:
+                                statusClass = 'status-pending';
+                                statusText = appointment.status;
+                        }
+                        
+                        html += `
+                            <div class="appointment-card">
+                                <div class="appointment-info">
+                                    <div class="appointment-date">${formatDate(appointment.date)} - ${appointment.time}</div>
+                                    <div class="appointment-service">${appointment.serviceName || 'Bilinmeyen Hizmet'}</div>
+                                    <div class="appointment-business">${appointment.businessName || 'Bilinmeyen İşletme'}</div>
+                                    <div class="appointment-status ${statusClass}">${statusText}</div>
+                                </div>
+                                <div class="appointment-actions">
+                                    ${appointment.status !== 'iptal' ? 
+                                        `<button onclick="cancelAppointment(${appointment.id})">İptal Et</button>` : 
+                                        ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    appointmentsList.innerHTML = html;
+                } else {
+                    appointmentsList.innerHTML = `
+                        <div class="no-appointments">
+                            <p>Henüz randevunuz bulunmamaktadır.</p>
+                            <p><a href="/businesses.html">İşletmeler sayfasından</a> randevu oluşturabilirsiniz.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Randevular yüklenirken hata:', error);
+                loadingEl.style.display = 'none';
+                appointmentsList.innerHTML = `
+                    <div class="no-appointments">
+                        <p>Randevular yüklenirken bir hata oluştu.</p>
+                        <p>Lütfen daha sonra tekrar deneyin.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Kullanıcının değerlendirmelerini yükle
+        async function loadReviews() {
+            const reviewsList = document.getElementById('reviewsList');
+            const loadingEl = document.getElementById('reviewsLoading');
+            
+            try {
+                loadingEl.style.display = 'block';
+                const response = await api.reviews.getUserReviews();
+                loadingEl.style.display = 'none';
+                
+                if (response.data && response.data.length > 0) {
+                    let html = '';
+                    
+                    response.data.forEach(review => {
+                        // Yıldız değerlendirmesi
+                        let stars = '';
+                        for (let i = 1; i <= 5; i++) {
+                            stars += `<span style="color: ${i <= review.rating ? 'gold' : '#ddd'}">★</span>`;
+                        }
+                        
+                        html += `
+                            <div class="review-card" style="margin-bottom: 1rem; padding: 1rem; background-color: #f9f9f9; border-radius: 4px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <div>
+                                        <strong style="display: block;">${review.businessName || 'Bilinmeyen İşletme'}</strong>
+                                        <div style="font-size: 1.25rem;">${stars}</div>
+                                    </div>
+                                    <div style="color: #777;">${formatDate(review.date || review.createdAt)}</div>
+                                </div>
+                                <p style="margin: 0.5rem 0;">${review.comment || ''}</p>
+                                <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                                    <button onclick="editReview(${review.id})" style="background-color: #3498db; margin-right: 0.5rem;">Düzenle</button>
+                                    <button onclick="deleteReview(${review.id})" style="background-color: #e74c3c;">Sil</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    reviewsList.innerHTML = html;
+                } else {
+                    reviewsList.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; background-color: #f9f9f9; border-radius: 4px;">
+                            <p>Henüz değerlendirmeniz bulunmamaktadır.</p>
+                            <p>Hizmet aldığınız işletmelere değerlendirme yapabilirsiniz.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Değerlendirmeler yüklenirken hata:', error);
+                loadingEl.style.display = 'none';
+                reviewsList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; background-color: #f9f9f9; border-radius: 4px;">
+                        <p>Değerlendirmeler yüklenirken bir hata oluştu.</p>
+                        <p>Lütfen daha sonra tekrar deneyin.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Profil bilgilerini güncelle
+        async function updateProfile() {
+            const nameEl = document.getElementById('name');
+            const emailEl = document.getElementById('email');
+            const phoneEl = document.getElementById('phone');
+            
+            const userData = {
+                name: nameEl.value.trim(),
+                email: emailEl.value.trim(),
+                phone: phoneEl.value.trim()
+            };
+            
+            try {
+                const response = await api.auth.updateProfile(userData);
+                
+                if (response.success) {
+                    showAlert('Profil bilgileriniz başarıyla güncellendi.', 'success');
+                    loadUserProfile(); // Profil bilgilerini yeniden yükle
+                } else {
+                    showAlert('Profil güncellenirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Profil güncellenirken hata:', error);
+                showAlert('Profil güncellenirken bir hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Şifre değiştir
+        async function updatePassword() {
+            const currentPasswordEl = document.getElementById('currentPassword');
+            const newPasswordEl = document.getElementById('newPassword');
+            const confirmPasswordEl = document.getElementById('confirmPassword');
+            
+            // Yeni şifre doğrulama kontrolü
+            if (newPasswordEl.value !== confirmPasswordEl.value) {
+                showAlert('Yeni şifreler eşleşmiyor.');
+                return;
+            }
+            
+            const passwordData = {
+                currentPassword: currentPasswordEl.value,
+                newPassword: newPasswordEl.value
+            };
+            
+            try {
+                const response = await api.auth.updatePassword(passwordData);
+                
+                if (response.success) {
+                    showAlert('Şifreniz başarıyla değiştirildi.', 'success');
+                    currentPasswordEl.value = '';
+                    newPasswordEl.value = '';
+                    confirmPasswordEl.value = '';
+                } else {
+                    showAlert('Şifre değiştirilirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Şifre güncellenirken hata:', error);
+                showAlert('Şifre güncellenirken bir hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Randevu iptal et
+        async function cancelAppointment(id) {
+            if (!confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')) {
+                return;
+            }
+            
+            try {
+                const reason = prompt('İptal sebebinizi yazabilir misiniz? (İsteğe bağlı)') || '';
+                const response = await api.appointments.cancel(id, reason);
+                
+                if (response.success) {
+                    showAlert('Randevunuz başarıyla iptal edildi.', 'success');
+                    loadAppointments(); // Randevuları yeniden yükle
+                } else {
+                    showAlert('Randevu iptal edilirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Randevu iptal edilirken hata:', error);
+                showAlert('Randevu iptal edilirken bir hata oluştu: ' + error.message);
+            }
+        }
+        
+        // Değerlendirme düzenle
+        function editReview(id) {
+            // Bu fonksiyon bir modal açarak değerlendirme düzenleme işlemini yapabilir
+            showAlert('Değerlendirme düzenleme yakında eklenecek.');
+        }
+        
+        // Değerlendirme sil
+        async function deleteReview(id) {
+            if (!confirm('Bu değerlendirmeyi silmek istediğinize emin misiniz?')) {
+                return;
+            }
+            
+            try {
+                const response = await api.reviews.delete(id);
+                
+                if (response.success) {
+                    showAlert('Değerlendirmeniz başarıyla silindi.', 'success');
+                    loadReviews(); // Değerlendirmeleri yeniden yükle
+                } else {
+                    showAlert('Değerlendirme silinirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Değerlendirme silinirken hata:', error);
+                showAlert('Değerlendirme silinirken bir hata oluştu: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hakkımızda - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .navbar-links {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 1.5rem;
+        }
+
+        .navbar-links li a {
+            color: var(--dark-color);
+            transition: color 0.3s;
+        }
+
+        .navbar-links li a:hover, 
+        .navbar-links li a.active {
+            color: var(--primary-color);
+        }
+
+        /* About Page Styles */
+        .about-hero {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            padding: 4rem 0;
+        }
+
+        .about-section:nth-child(even) {
+            background-color: white;
+        }
+
+        .about-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .about-section p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .about-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .about-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .about-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-card p {
+            color: #666;
+        }
+
+        .about-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+
+        .about-timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 45%;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid var(--primary-color);
+            border-radius: 50%;
+            top: 20px;
+            z-index: 1;
+        }
+
+        .timeline-left {
+            left: 0;
+        }
+
+        .timeline-right {
+            left: 55%;
+        }
+
+        .timeline-left::after {
+            right: -10px;
+        }
+
+        .timeline-right::after {
+            left: -10px;
+        }
+
+        .timeline-item h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .timeline-item .date {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .team-section {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-member-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .team-member-info {
+            padding: 1.5rem;
+        }
+
+        .team-member-info h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .team-member-info .position {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .team-member-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .mission-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .stats-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+            color: #ddd;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+            }
+            
+            .navbar-links {
+                margin-top: 1rem;
+            }
+            
+            .navbar-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .about-timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::after {
+                left: 21px;
+            }
+            
+            .timeline-right {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/about.html" class="active">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="about-hero">
+        <div class="container">
+            <h1>Arabamon Hakkında</h1>
+            <p>Arabamon, araç sahiplerini kaliteli servis sağlayıcılarla buluşturan yenilikçi bir platformdur. Misyonumuz, araç bakım süreçlerini kolaylaştırmak ve daha şeffaf hale getirmektir.</p>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <h2>Hikayemiz</h2>
+            <p>Arabamon, 2020 yılında, araç sahiplerinin kaliteli ve güvenilir servis bulma sorununa çözüm getirmek amacıyla kuruldu. Kurucumuz, kendi araç servis deneyimlerinden yola çıkarak, araç sahiplerinin servis bulmada yaşadığı zorlukları aşmak için bu platformu geliştirdi.</p>
+            
+            <p>Başlangıçta küçük bir proje olarak başlayan Arabamon, bugün Türkiye'nin en büyük araç bakım ve servis platformlarından biri haline geldi. Her gün binlerce araç sahibi, platformumuz aracılığıyla güvenilir ve kaliteli servis sağlayıcılarla buluşuyor.</p>
+            
+            <div class="about-timeline">
+                <div class="timeline-item timeline-left">
+                    <h3>Başlangıç</h3>
+                    <div class="date">Ocak 2020</div>
+                    <p>Arabamon fikri doğdu ve ilk prototip geliştirildi.</p>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <h3>Beta Sürüm</h3>
+                    <div class="date">Haziran 2020</div>
+                    <p>İlk beta sürüm, sınırlı sayıda kullanıcıya açıldı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <h3>Resmi Lansman</h3>
+                    <div class="date">Ekim 2020</div>
+                    <p>Arabamon, tüm Türkiye'de resmen kullanıma açıldı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <h3>İlk Yatırım</h3>
+                    <div class="date">Mart 2021</div>
+                    <p>İlk yatırım turu başarıyla tamamlandı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <h3>Mobil Uygulama</h3>
+                    <div class="date">Ağustos 2021</div>
+                    <p>iOS ve Android için mobil uygulamalar yayınlandı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <h3>Bugün</h3>
+                    <div class="date">2023</div>
+                    <p>1000+ servis sağlayıcı ve 100,000+ kullanıcı ile büyümeye devam ediyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <h2>Misyon ve Vizyonumuz</h2>
+            
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h3>Misyonumuz</h3>
+                    <p>Araç sahiplerinin bakım ve servis süreçlerini kolaylaştırmak, şeffaf ve güvenilir bir platform sunarak araç bakım deneyimini iyileştirmek.</p>
+                    <p>Tüm araç sahiplerine kaliteli servis sağlayıcılara erişim imkanı sunarak, araç bakımında yaşanan zorlukları ortadan kaldırmayı hedefliyoruz.</p>
+                </div>
+                
+                <div class="mission-card">
+                    <h3>Vizyonumuz</h3>
+                    <p>Araç bakım sektöründe Türkiye'nin lider dijital platformu olmak ve hizmetlerimizi global pazara taşımak.</p>
+                    <p>Teknoloji ve yenilikçi çözümlerle araç bakım sektörünü dönüştürerek, daha verimli, şeffaf ve kullanıcı dostu bir ekosistem oluşturmayı amaçlıyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <h2>Rakamlarla Arabamon</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">1,000+</div>
+                    <div class="stat-label">Servis Sağlayıcı</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">100,000+</div>
+                    <div class="stat-label">Kayıtlı Kullanıcı</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">250,000+</div>
+                    <div class="stat-label">Tamamlanan Randevu</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Ortalama Değerlendirme</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <h2>Neden Arabamon?</h2>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-card-icon">🔎</div>
+                    <h3>Kolay Keşif</h3>
+                    <p>Konumunuza göre en yakın ve en iyi servis sağlayıcıları kolayca bulun.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">⭐</div>
+                    <h3>Gerçek Değerlendirmeler</h3>
+                    <p>Servis sağlayıcıları hakkında gerçek kullanıcı deneyimlerini okuyun.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">📅</div>
+                    <h3>Online Randevu</h3>
+                    <p>Aracınız için servis randevunuzu online olarak oluşturun ve yönetin.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">💰</div>
+                    <h3>Fiyat Şeffaflığı</h3>
+                    <p>Servis ücretlerini önceden görün ve fiyatları karşılaştırın.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">🔔</div>
+                    <h3>Hatırlatmalar</h3>
+                    <p>Periyodik bakım zamanlarınız için otomatik hatırlatmalar alın.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">🔒</div>
+                    <h3>Güvenli Ödeme</h3>
+                    <p>Hizmet bedellerinizi güvenli bir şekilde online olarak ödeyin.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2>Ekibimiz</h2>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Ali Yılmaz" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Ali Yılmaz</h3>
+                        <div class="position">Kurucu & CEO</div>
+                        <p>Otomotiv sektöründe 15 yıllık deneyim, yazılım ve iş geliştirme konusunda uzman.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Zeynep Kaya" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Zeynep Kaya</h3>
+                        <div class="position">CTO</div>
+                        <p>Yazılım mühendisi, 10+ yıllık teknoloji deneyimi, inovasyon odaklı lider.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Mehmet Demir" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Mehmet Demir</h3>
+                        <div class="position">Pazarlama Direktörü</div>
+                        <p>Dijital pazarlama uzmanı, otomotiv ve teknoloji sektörlerinde deneyimli.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Ayşe Yıldız" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Ayşe Yıldız</h3>
+                        <div class="position">Müşteri İlişkileri</div>
+                        <p>Müşteri deneyimi konusunda uzman, servis sağlayıcılar ile ilişkileri yönetiyor.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetleri platformu.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>info@arabamon.com</p>
+                    <p>+90 555 123 4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hakkımızda - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .navbar-links {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 1.5rem;
+        }
+
+        .navbar-links li a {
+            color: var(--dark-color);
+            transition: color 0.3s;
+        }
+
+        .navbar-links li a:hover, 
+        .navbar-links li a.active {
+            color: var(--primary-color);
+        }
+
+        /* About Page Styles */
+        .about-hero {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            padding: 4rem 0;
+        }
+
+        .about-section:nth-child(even) {
+            background-color: white;
+        }
+
+        .about-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .about-section p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .about-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .about-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .about-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-card p {
+            color: #666;
+        }
+
+        .about-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+
+        .about-timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 45%;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid var(--primary-color);
+            border-radius: 50%;
+            top: 20px;
+            z-index: 1;
+        }
+
+        .timeline-left {
+            left: 0;
+        }
+
+        .timeline-right {
+            left: 55%;
+        }
+
+        .timeline-left::after {
+            right: -10px;
+        }
+
+        .timeline-right::after {
+            left: -10px;
+        }
+
+        .timeline-item h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .timeline-item .date {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .team-section {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-member-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .team-member-info {
+            padding: 1.5rem;
+        }
+
+        .team-member-info h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .team-member-info .position {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .team-member-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .mission-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .stats-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+            color: #ddd;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+            }
+            
+            .navbar-links {
+                margin-top: 1rem;
+            }
+            
+            .navbar-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .about-timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::after {
+                left: 21px;
+            }
+            
+            .timeline-right {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/about.html" class="active">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="about-hero">
+        <div class="container">
+            <h1>Arabamon Hakkında</h1>
+            <p>Arabamon, araç sahiplerini kaliteli servis sağlayıcılarla buluşturan yenilikçi bir platformdur. Misyonumuz, araç bakım süreçlerini kolaylaştırmak ve daha şeffaf hale getirmektir.</p>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <h2>Hikayemiz</h2>
+            <p>Arabamon, 2020 yılında, araç sahiplerinin kaliteli ve güvenilir servis bulma sorununa çözüm getirmek amacıyla kuruldu. Kurucumuz, kendi araç servis deneyimlerinden yola çıkarak, araç sahiplerinin servis bulmada yaşadığı zorlukları aşmak için bu platformu geliştirdi.</p>
+            
+            <p>Başlangıçta küçük bir proje olarak başlayan Arabamon, bugün Türkiye'nin en büyük araç bakım ve servis platformlarından biri haline geldi. Her gün binlerce araç sahibi, platformumuz aracılığıyla güvenilir ve kaliteli servis sağlayıcılarla buluşuyor.</p>
+            
+            <div class="about-timeline">
+                <div class="timeline-item timeline-left">
+                    <h3>Başlangıç</h3>
+                    <div class="date">Ocak 2020</div>
+                    <p>Arabamon fikri doğdu ve ilk prototip geliştirildi.</p>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <h3>Beta Sürüm</h3>
+                    <div class="date">Haziran 2020</div>
+                    <p>İlk beta sürüm, sınırlı sayıda kullanıcıya açıldı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <h3>Resmi Lansman</h3>
+                    <div class="date">Ekim 2020</div>
+                    <p>Arabamon, tüm Türkiye'de resmen kullanıma açıldı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <h3>İlk Yatırım</h3>
+                    <div class="date">Mart 2021</div>
+                    <p>İlk yatırım turu başarıyla tamamlandı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <h3>Mobil Uygulama</h3>
+                    <div class="date">Ağustos 2021</div>
+                    <p>iOS ve Android için mobil uygulamalar yayınlandı.</p>
+                </div>
+                
+                <div class="timeline-item timeline-right">
+                    <h3>Bugün</h3>
+                    <div class="date">2023</div>
+                    <p>1000+ servis sağlayıcı ve 100,000+ kullanıcı ile büyümeye devam ediyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <h2>Misyon ve Vizyonumuz</h2>
+            
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h3>Misyonumuz</h3>
+                    <p>Araç sahiplerinin bakım ve servis süreçlerini kolaylaştırmak, şeffaf ve güvenilir bir platform sunarak araç bakım deneyimini iyileştirmek.</p>
+                    <p>Tüm araç sahiplerine kaliteli servis sağlayıcılara erişim imkanı sunarak, araç bakımında yaşanan zorlukları ortadan kaldırmayı hedefliyoruz.</p>
+                </div>
+                
+                <div class="mission-card">
+                    <h3>Vizyonumuz</h3>
+                    <p>Araç bakım sektöründe Türkiye'nin lider dijital platformu olmak ve hizmetlerimizi global pazara taşımak.</p>
+                    <p>Teknoloji ve yenilikçi çözümlerle araç bakım sektörünü dönüştürerek, daha verimli, şeffaf ve kullanıcı dostu bir ekosistem oluşturmayı amaçlıyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <h2>Rakamlarla Arabamon</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">1,000+</div>
+                    <div class="stat-label">Servis Sağlayıcı</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">100,000+</div>
+                    <div class="stat-label">Kayıtlı Kullanıcı</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">250,000+</div>
+                    <div class="stat-label">Tamamlanan Randevu</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Ortalama Değerlendirme</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <h2>Neden Arabamon?</h2>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-card-icon">🔎</div>
+                    <h3>Kolay Keşif</h3>
+                    <p>Konumunuza göre en yakın ve en iyi servis sağlayıcıları kolayca bulun.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">⭐</div>
+                    <h3>Gerçek Değerlendirmeler</h3>
+                    <p>Servis sağlayıcıları hakkında gerçek kullanıcı deneyimlerini okuyun.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">📅</div>
+                    <h3>Online Randevu</h3>
+                    <p>Aracınız için servis randevunuzu online olarak oluşturun ve yönetin.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">💰</div>
+                    <h3>Fiyat Şeffaflığı</h3>
+                    <p>Servis ücretlerini önceden görün ve fiyatları karşılaştırın.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">🔔</div>
+                    <h3>Hatırlatmalar</h3>
+                    <p>Periyodik bakım zamanlarınız için otomatik hatırlatmalar alın.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-card-icon">🔒</div>
+                    <h3>Güvenli Ödeme</h3>
+                    <p>Hizmet bedellerinizi güvenli bir şekilde online olarak ödeyin.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2>Ekibimiz</h2>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Ali Yılmaz" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Ali Yılmaz</h3>
+                        <div class="position">Kurucu & CEO</div>
+                        <p>Otomotiv sektöründe 15 yıllık deneyim, yazılım ve iş geliştirme konusunda uzman.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Zeynep Kaya" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Zeynep Kaya</h3>
+                        <div class="position">CTO</div>
+                        <p>Yazılım mühendisi, 10+ yıllık teknoloji deneyimi, inovasyon odaklı lider.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Mehmet Demir" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Mehmet Demir</h3>
+                        <div class="position">Pazarlama Direktörü</div>
+                        <p>Dijital pazarlama uzmanı, otomotiv ve teknoloji sektörlerinde deneyimli.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/300x300" alt="Ayşe Yıldız" class="team-member-img">
+                    <div class="team-member-info">
+                        <h3>Ayşe Yıldız</h3>
+                        <div class="position">Müşteri İlişkileri</div>
+                        <p>Müşteri deneyimi konusunda uzman, servis sağlayıcılar ile ilişkileri yönetiyor.</p>
+                        <div class="social-links">
+                            <a href="#"><i>in</i></a>
+                            <a href="#"><i>tw</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetleri platformu.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>info@arabamon.com</p>
+                    <p>+90 555 123 4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kampanyalar - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Kampanyalar Sayfası Özel Stilleri */
+        .campaigns-page {
+            padding: 4rem 0;
+        }
+        
+        .campaigns-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .campaigns-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+        
+        .campaigns-header p {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .campaigns-filters {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .campaign-card {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .campaign-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 3;
+            box-shadow: 0 5px 10px rgba(255, 102, 0, 0.2);
+        }
+        
+        .campaign-card.featured {
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .campaign-card.featured::after {
+            content: 'Öne Çıkan';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+        
+        .campaign-cta {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .campaign-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .pagination {
+            margin-top: 3rem;
+        }
+        
+        /* Kampanya Detay Modal */
+        .campaign-detail-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .campaign-detail-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .campaign-detail-header {
+            height: 250px;
+            position: relative;
+        }
+        
+        .campaign-detail-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .campaign-detail-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+        
+        .campaign-detail-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 2;
+            transition: all 0.2s;
+        }
+        
+        .campaign-detail-close:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .campaign-detail-body {
+            padding: 2rem;
+        }
+        
+        .campaign-detail-body h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .campaign-detail-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .campaign-meta-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .campaign-meta-item i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .campaign-detail-description {
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            color: #444;
+        }
+        
+        .campaign-detail-terms {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .campaign-detail-terms h4 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .campaign-detail-terms ul {
+            padding-left: 1.5rem;
+            color: #666;
+        }
+        
+        .campaign-detail-terms li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .campaign-participating {
+            margin-bottom: 1.5rem;
+        }
+        
+        .campaign-participating h4 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .participating-businesses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .business-tag {
+            background-color: rgba(0, 102, 204, 0.1);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .campaign-detail-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .campaigns-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .campaign-detail-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .campaign-detail-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/campaigns.html" class="active">Kampanyalar</a></li>
+                    <li><a href="/about.html">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="campaigns-page">
+        <div class="container">
+            <div class="campaigns-header">
+                <h1>Güncel Kampanyalar</h1>
+                <p>İşletmelerimiz tarafından sunulan özel indirim ve fırsatları keşfedin. En uygun araç bakım hizmetlerini kaçırmayın!</p>
+            </div>
+            
+            <div class="campaigns-filters">
+                <form class="filter-form" id="filter-form">
+                    <div class="filter-group">
+                        <label for="service-type">Hizmet Türü</label>
+                        <select id="service-type" name="service-type">
+                            <option value="">Tümü</option>
+                            <option value="oil-change">Yağ Değişimi</option>
+                            <option value="tire-service">Lastik Değişimi</option>
+                            <option value="car-wash">Araç Yıkama</option>
+                            <option value="car-inspection">Oto Ekspertiz</option>
+                            <option value="parking">Otopark</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="location">Konum</label>
+                        <input type="text" id="location" name="location" placeholder="Şehir veya ilçe">
+                    </div>
+                    <div class="filter-group">
+                        <label for="discount">Minimum İndirim</label>
+                        <select id="discount" name="discount">
+                            <option value="">Tümü</option>
+                            <option value="10">%10 ve üzeri</option>
+                            <option value="20">%20 ve üzeri</option>
+                            <option value="30">%30 ve üzeri</option>
+                            <option value="50">%50 ve üzeri</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">Filtrele</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="campaigns-grid" id="campaigns-container">
+                <!-- Kampanyalar burada dinamik olarak yüklenecek -->
+                <div class="campaign-card featured">
+                    <span class="campaign-badge">%25 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Periyodik Bakım Kampanyası">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Periyodik Bakım Özel Fırsatı</h3>
+                        <p>Şimdi periyodik bakım yaptıran herkese %25 indirim ve ücretsiz check-up!</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 7 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 12 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 30 Ekim'e kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="1">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">%20 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1591768793355-74d04bb6608f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kış Bakımı Paketi">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Kış Bakımı Paketi</h3>
+                        <p>Kış yaklaşırken aracınızı hazırlatın! Antifriz, silecek, akü ve far kontrolü dahil.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 15 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 8 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 15 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="2">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">%30 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1672505445096-0585a0e0a027?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Motor Yıkama">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Motor Yıkama Kampanyası</h3>
+                        <p>Motor yıkama hizmetinde %30 indirim. İç-dış detaylı temizlik paketi alan müşterilere özel.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 9 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 6 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 1 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="3">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">2'si 1 Fiyatına</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1470224114660-3f6686c562eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Lastik Değişimi">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Lastik Değişimi Kampanyası</h3>
+                        <p>4 lastik alana 2 lastik hediye! Ayrıca ücretsiz balans ve rot ayarı.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 10 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 15 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 5 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="4">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">%15 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Oto Ekspertiz">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Oto Ekspertiz İndirimi</h3>
+                        <p>Aracınızın tam kapsamlı kontrolünde %15 indirim. Garanti kapsamında 56 nokta kontrolü.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 20 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 5 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 15 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="5">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card featured">
+                    <span class="campaign-badge">%50 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Otopark">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Aylık Otopark Aboneliği</h3>
+                        <p>12 aylık otopark aboneliğinde ilk ay %50 indirim. 7/24 güvenlik kameralı otopark.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 5 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 3 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 25 Ekim'e kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="6">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <div class="pagination-info">
+                    1-6 / 24 kampanya gösteriliyor
+                </div>
+                <div class="pagination-links">
+                    <a href="#" class="pagination-link active">1</a>
+                    <a href="#" class="pagination-link">2</a>
+                    <a href="#" class="pagination-link">3</a>
+                    <span class="pagination-dots">...</span>
+                    <a href="#" class="pagination-link">4</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Kampanya Detay Modal -->
+    <div id="campaign-detail-modal" class="campaign-detail-modal">
+        <div class="campaign-detail-content">
+            <div class="campaign-detail-header">
+                <span class="campaign-detail-badge">%25 İndirim</span>
+                <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=60" alt="Periyodik Bakım Kampanyası">
+                <span class="campaign-detail-close" id="close-modal">&times;</span>
+            </div>
+            <div class="campaign-detail-body">
+                <h2>Periyodik Bakım Özel Fırsatı</h2>
+                <div class="campaign-detail-meta">
+                    <div class="campaign-meta-item">
+                        <i class="far fa-calendar-alt"></i> Geçerlilik: 15 Ekim - 30 Ekim 2023
+                    </div>
+                    <div class="campaign-meta-item">
+                        <i class="fas fa-map-marker-alt"></i> Katılan İşletme: 12
+                    </div>
+                    <div class="campaign-meta-item">
+                        <i class="fas fa-tags"></i> Kategori: Bakım, Periyodik Servis
+                    </div>
+                </div>
+                
+                <div class="campaign-detail-description">
+                    <p>Periyodik bakım, aracınızın ömrünü uzatmak ve performansını korumak için en önemli bakım türlerinden biridir. Bu özel kampanya ile şimdi periyodik bakım yaptıran herkese %25 indirim ve ücretsiz araç check-up hizmeti sunuyoruz!</p>
+                    <p>Kampanya kapsamında aşağıdaki hizmetler indirimli olarak sağlanmaktadır:</p>
+                    <ul>
+                        <li>Motor yağı ve yağ filtresi değişimi</li>
+                        <li>Hava ve yakıt filtresi kontrolü ve değişimi</li>
+                        <li>Fren sistemi kontrolü</li>
+                        <li>Akü kontrolü</li>
+                        <li>Yağ, su ve antifriz seviyelerinin kontrolü</li>
+                        <li>Süspansiyon sistemi kontrolü</li>
+                    </ul>
+                </div>
+                
+                <div class="campaign-detail-terms">
+                    <h4>Kampanya Koşulları</h4>
+                    <ul>
+                        <li>Kampanya 30 Ekim 2023 tarihine kadar geçerlidir.</li>
+                        <li>İndirim, işletmenin standart fiyatları üzerinden uygulanır.</li>
+                        <li>Kampanya, diğer indirim ve kampanyalarla birleştirilemez.</li>
+                        <li>İşletmeler, stok durumuna göre hizmet verebilir.</li>
+                        <li>Randevu durumuna göre hizmet saatleri değişiklik gösterebilir.</li>
+                    </ul>
+                </div>
+                
+                <div class="campaign-participating">
+                    <h4>Kampanyaya Katılan İşletmeler</h4>
+                    <div class="participating-businesses">
+                        <span class="business-tag">Merkez Oto Servis</span>
+                        <span class="business-tag">Expert Auto Center</span>
+                        <span class="business-tag">Yeşil Vadi Servis</span>
+                        <span class="business-tag">Teknik Motor</span>
+                        <span class="business-tag">Lastik Dünyası</span>
+                        <span class="business-tag">+7 işletme daha</span>
+                    </div>
+                </div>
+                
+                <div class="campaign-detail-actions">
+                    <a href="/businesses.html?service=periodic-maintenance" class="btn btn-secondary">İşletmeleri Gör</a>
+                    <a href="/businesses.html?service=periodic-maintenance" class="btn btn-primary">Randevu Al</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetlerini kolayca bulun, karşılaştırın ve randevu oluşturun.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Erişim</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/campaigns.html">Kampanyalar</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>Email: info@arabamon.com</p>
+                    <p>Telefon: 0850 123 45 67</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon - Tüm Hakları Saklıdır</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kampanya detay modalını açma
+            const campaignButtons = document.querySelectorAll('.show-campaign-detail');
+            const modal = document.getElementById('campaign-detail-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            campaignButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Gerçek uygulamada burada API'den kampanya detayları çekilir
+                    // Şu an için sadece modalı gösteriyoruz
+                    modal.style.display = 'block';
+                    
+                    // Sayfa kaydırmayı engelle
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Modalı kapatma
+            closeModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+                
+                // Sayfa kaydırmayı tekrar etkinleştir
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Modal dışına tıklandığında kapatma
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Filtreleme formu gönderildiğinde
+            const filterForm = document.getElementById('filter-form');
+            filterForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Gerçek uygulamada burada filtre parametreleri API'ye gönderilir
+                // ve sonuçlar güncellenir
+                console.log('Filtreler uygulanıyor...');
+                
+                // Demo için bir gösterim yapalım
+                const serviceType = document.getElementById('service-type').value;
+                const location = document.getElementById('location').value;
+                const discount = document.getElementById('discount').value;
+                
+                alert(`Filtreler: Hizmet Türü = ${serviceType || 'Tümü'}, Konum = ${location || 'Tümü'}, Min. İndirim = ${discount || 'Tümü'}`);
+            });
+        });
+    </script>
+</body>
+</html> 
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kampanyalar - Arabamon</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Kampanyalar Sayfası Özel Stilleri */
+        .campaigns-page {
+            padding: 4rem 0;
+        }
+        
+        .campaigns-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .campaigns-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+        
+        .campaigns-header p {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .campaigns-filters {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .campaign-card {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .campaign-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 3;
+            box-shadow: 0 5px 10px rgba(255, 102, 0, 0.2);
+        }
+        
+        .campaign-card.featured {
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .campaign-card.featured::after {
+            content: 'Öne Çıkan';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            z-index: 2;
+        }
+        
+        .campaign-cta {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .campaign-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .pagination {
+            margin-top: 3rem;
+        }
+        
+        /* Kampanya Detay Modal */
+        .campaign-detail-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .campaign-detail-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .campaign-detail-header {
+            height: 250px;
+            position: relative;
+        }
+        
+        .campaign-detail-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .campaign-detail-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+        
+        .campaign-detail-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 2;
+            transition: all 0.2s;
+        }
+        
+        .campaign-detail-close:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .campaign-detail-body {
+            padding: 2rem;
+        }
+        
+        .campaign-detail-body h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .campaign-detail-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .campaign-meta-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .campaign-meta-item i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .campaign-detail-description {
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            color: #444;
+        }
+        
+        .campaign-detail-terms {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .campaign-detail-terms h4 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .campaign-detail-terms ul {
+            padding-left: 1.5rem;
+            color: #666;
+        }
+        
+        .campaign-detail-terms li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .campaign-participating {
+            margin-bottom: 1.5rem;
+        }
+        
+        .campaign-participating h4 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .participating-businesses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .business-tag {
+            background-color: rgba(0, 102, 204, 0.1);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .campaign-detail-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .campaigns-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .campaign-detail-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .campaign-detail-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/campaigns.html" class="active">Kampanyalar</a></li>
+                    <li><a href="/about.html">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="campaigns-page">
+        <div class="container">
+            <div class="campaigns-header">
+                <h1>Güncel Kampanyalar</h1>
+                <p>İşletmelerimiz tarafından sunulan özel indirim ve fırsatları keşfedin. En uygun araç bakım hizmetlerini kaçırmayın!</p>
+            </div>
+            
+            <div class="campaigns-filters">
+                <form class="filter-form" id="filter-form">
+                    <div class="filter-group">
+                        <label for="service-type">Hizmet Türü</label>
+                        <select id="service-type" name="service-type">
+                            <option value="">Tümü</option>
+                            <option value="oil-change">Yağ Değişimi</option>
+                            <option value="tire-service">Lastik Değişimi</option>
+                            <option value="car-wash">Araç Yıkama</option>
+                            <option value="car-inspection">Oto Ekspertiz</option>
+                            <option value="parking">Otopark</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="location">Konum</label>
+                        <input type="text" id="location" name="location" placeholder="Şehir veya ilçe">
+                    </div>
+                    <div class="filter-group">
+                        <label for="discount">Minimum İndirim</label>
+                        <select id="discount" name="discount">
+                            <option value="">Tümü</option>
+                            <option value="10">%10 ve üzeri</option>
+                            <option value="20">%20 ve üzeri</option>
+                            <option value="30">%30 ve üzeri</option>
+                            <option value="50">%50 ve üzeri</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">Filtrele</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="campaigns-grid" id="campaigns-container">
+                <!-- Kampanyalar burada dinamik olarak yüklenecek -->
+                <div class="campaign-card featured">
+                    <span class="campaign-badge">%25 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Periyodik Bakım Kampanyası">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Periyodik Bakım Özel Fırsatı</h3>
+                        <p>Şimdi periyodik bakım yaptıran herkese %25 indirim ve ücretsiz check-up!</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 7 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 12 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 30 Ekim'e kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="1">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">%20 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1591768793355-74d04bb6608f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kış Bakımı Paketi">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Kış Bakımı Paketi</h3>
+                        <p>Kış yaklaşırken aracınızı hazırlatın! Antifriz, silecek, akü ve far kontrolü dahil.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 15 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 8 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 15 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="2">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">%30 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1672505445096-0585a0e0a027?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Motor Yıkama">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Motor Yıkama Kampanyası</h3>
+                        <p>Motor yıkama hizmetinde %30 indirim. İç-dış detaylı temizlik paketi alan müşterilere özel.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 9 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 6 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 1 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="3">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">2'si 1 Fiyatına</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1470224114660-3f6686c562eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Lastik Değişimi">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Lastik Değişimi Kampanyası</h3>
+                        <p>4 lastik alana 2 lastik hediye! Ayrıca ücretsiz balans ve rot ayarı.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 10 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 15 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 5 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="4">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <span class="campaign-badge">%15 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Oto Ekspertiz">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Oto Ekspertiz İndirimi</h3>
+                        <p>Aracınızın tam kapsamlı kontrolünde %15 indirim. Garanti kapsamında 56 nokta kontrolü.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 20 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 5 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 15 Kasım'a kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="5">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="campaign-card featured">
+                    <span class="campaign-badge">%50 İndirim</span>
+                    <div class="campaign-image">
+                        <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Otopark">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Aylık Otopark Aboneliği</h3>
+                        <p>12 aylık otopark aboneliğinde ilk ay %50 indirim. 7/24 güvenlik kameralı otopark.</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 5 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 3 İşletme</span>
+                        </div>
+                        <div class="campaign-cta">
+                            <div class="campaign-date">
+                                <i class="far fa-calendar-alt"></i> 25 Ekim'e kadar
+                            </div>
+                            <button class="btn btn-primary show-campaign-detail" data-id="6">Detayları Gör</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <div class="pagination-info">
+                    1-6 / 24 kampanya gösteriliyor
+                </div>
+                <div class="pagination-links">
+                    <a href="#" class="pagination-link active">1</a>
+                    <a href="#" class="pagination-link">2</a>
+                    <a href="#" class="pagination-link">3</a>
+                    <span class="pagination-dots">...</span>
+                    <a href="#" class="pagination-link">4</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Kampanya Detay Modal -->
+    <div id="campaign-detail-modal" class="campaign-detail-modal">
+        <div class="campaign-detail-content">
+            <div class="campaign-detail-header">
+                <span class="campaign-detail-badge">%25 İndirim</span>
+                <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=60" alt="Periyodik Bakım Kampanyası">
+                <span class="campaign-detail-close" id="close-modal">&times;</span>
+            </div>
+            <div class="campaign-detail-body">
+                <h2>Periyodik Bakım Özel Fırsatı</h2>
+                <div class="campaign-detail-meta">
+                    <div class="campaign-meta-item">
+                        <i class="far fa-calendar-alt"></i> Geçerlilik: 15 Ekim - 30 Ekim 2023
+                    </div>
+                    <div class="campaign-meta-item">
+                        <i class="fas fa-map-marker-alt"></i> Katılan İşletme: 12
+                    </div>
+                    <div class="campaign-meta-item">
+                        <i class="fas fa-tags"></i> Kategori: Bakım, Periyodik Servis
+                    </div>
+                </div>
+                
+                <div class="campaign-detail-description">
+                    <p>Periyodik bakım, aracınızın ömrünü uzatmak ve performansını korumak için en önemli bakım türlerinden biridir. Bu özel kampanya ile şimdi periyodik bakım yaptıran herkese %25 indirim ve ücretsiz araç check-up hizmeti sunuyoruz!</p>
+                    <p>Kampanya kapsamında aşağıdaki hizmetler indirimli olarak sağlanmaktadır:</p>
+                    <ul>
+                        <li>Motor yağı ve yağ filtresi değişimi</li>
+                        <li>Hava ve yakıt filtresi kontrolü ve değişimi</li>
+                        <li>Fren sistemi kontrolü</li>
+                        <li>Akü kontrolü</li>
+                        <li>Yağ, su ve antifriz seviyelerinin kontrolü</li>
+                        <li>Süspansiyon sistemi kontrolü</li>
+                    </ul>
+                </div>
+                
+                <div class="campaign-detail-terms">
+                    <h4>Kampanya Koşulları</h4>
+                    <ul>
+                        <li>Kampanya 30 Ekim 2023 tarihine kadar geçerlidir.</li>
+                        <li>İndirim, işletmenin standart fiyatları üzerinden uygulanır.</li>
+                        <li>Kampanya, diğer indirim ve kampanyalarla birleştirilemez.</li>
+                        <li>İşletmeler, stok durumuna göre hizmet verebilir.</li>
+                        <li>Randevu durumuna göre hizmet saatleri değişiklik gösterebilir.</li>
+                    </ul>
+                </div>
+                
+                <div class="campaign-participating">
+                    <h4>Kampanyaya Katılan İşletmeler</h4>
+                    <div class="participating-businesses">
+                        <span class="business-tag">Merkez Oto Servis</span>
+                        <span class="business-tag">Expert Auto Center</span>
+                        <span class="business-tag">Yeşil Vadi Servis</span>
+                        <span class="business-tag">Teknik Motor</span>
+                        <span class="business-tag">Lastik Dünyası</span>
+                        <span class="business-tag">+7 işletme daha</span>
+                    </div>
+                </div>
+                
+                <div class="campaign-detail-actions">
+                    <a href="/businesses.html?service=periodic-maintenance" class="btn btn-secondary">İşletmeleri Gör</a>
+                    <a href="/businesses.html?service=periodic-maintenance" class="btn btn-primary">Randevu Al</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetlerini kolayca bulun, karşılaştırın ve randevu oluşturun.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Erişim</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/campaigns.html">Kampanyalar</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>Email: info@arabamon.com</p>
+                    <p>Telefon: 0850 123 45 67</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon - Tüm Hakları Saklıdır</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kampanya detay modalını açma
+            const campaignButtons = document.querySelectorAll('.show-campaign-detail');
+            const modal = document.getElementById('campaign-detail-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            campaignButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Gerçek uygulamada burada API'den kampanya detayları çekilir
+                    // Şu an için sadece modalı gösteriyoruz
+                    modal.style.display = 'block';
+                    
+                    // Sayfa kaydırmayı engelle
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Modalı kapatma
+            closeModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+                
+                // Sayfa kaydırmayı tekrar etkinleştir
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Modal dışına tıklandığında kapatma
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Filtreleme formu gönderildiğinde
+            const filterForm = document.getElementById('filter-form');
+            filterForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Gerçek uygulamada burada filtre parametreleri API'ye gönderilir
+                // ve sonuçlar güncellenir
+                console.log('Filtreler uygulanıyor...');
+                
+                // Demo için bir gösterim yapalım
+                const serviceType = document.getElementById('service-type').value;
+                const location = document.getElementById('location').value;
+                const discount = document.getElementById('discount').value;
+                
+                alert(`Filtreler: Hizmet Türü = ${serviceType || 'Tümü'}, Konum = ${location || 'Tümü'}, Min. İndirim = ${discount || 'Tümü'}`);
+            });
+        });
+    </script>
+</body>
+</html> 

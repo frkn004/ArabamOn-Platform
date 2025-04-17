@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Arabamon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 0;
+            background-color: #f8f9fa;
+        }
+        
+        .auth-card {
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            background-color: #fff;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-header h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-header p {
+            color: #6c757d;
+        }
+        
+        .auth-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-form .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .auth-form .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .auth-form .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+            outline: none;
+        }
+        
+        .auth-form .input-group {
+            position: relative;
+        }
+        
+        .auth-form .input-group-append {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-right: 1rem;
+            cursor: pointer;
+        }
+        
+        .auth-form .btn-submit {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .auth-footer p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .social-auth {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .social-auth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 0.5rem;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-auth-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .facebook {
+            background-color: #3b5998;
+        }
+        
+        .google {
+            background-color: #db4437;
+        }
+        
+        .apple {
+            background-color: #000;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -0.75rem;
+            margin-left: -0.75rem;
+        }
+        
+        .form-col {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
+        }
+        
+        .terms {
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .terms label {
+            display: flex;
+            align-items: center;
+        }
+        
+        .terms input {
+            margin-right: 0.5rem;
+        }
+        
+        .already-member {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .already-member a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .already-member a:hover {
+            text-decoration: underline;
+        }
+        
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+        }
+        
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: var(--danger-color);
+        }
+        
+        .password-requirements {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+        
+        .password-requirements ul {
+            margin-top: 0.5rem;
+            padding-left: 1.25rem;
+        }
+        
+        .password-requirements li {
+            margin-bottom: 0.25rem;
+            list-style-type: disc;
+        }
+        
+        @media (max-width: 768px) {
+            .form-col {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="index.html">Arabamon</a>
+            </div>
+            <nav>
+                <ul class="navbar-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="businesses.html">İşletmeler</a></li>
+                    <li><a href="services.html">Hizmetler</a></li>
+                    <li><a href="about.html">Hakkımızda</a></li>
+                    <li><a href="contact.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Register Form -->
+    <section class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Kayıt Ol</h1>
+                <p>Arabamon'a üye olun ve aracınız için en iyi hizmetlere erişin</p>
+            </div>
+            
+            <!-- Alert for errors -->
+            <div id="register-alert" class="alert alert-danger" style="display: none;"></div>
+            
+            <form id="register-form" class="auth-form">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="first-name" class="form-label">Ad</label>
+                            <input type="text" id="first-name" name="firstName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="last-name" class="form-label">Soyad</label>
+                            <input type="text" id="last-name" name="lastName" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">E-posta Adresi</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="form-label">Telefon</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" required pattern="[0-9]{10}" placeholder="5xx xxx xx xx">
+                    <small class="password-requirements">10 haneli telefon numaranızı başında 0 olmadan giriniz.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Şifre</label>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" class="form-control" required minlength="8">
+                        <div class="input-group-append">
+                            <i id="password-toggle" class="far fa-eye-slash"></i>
+                        </div>
+                    </div>
+                    <div class="password-requirements">
+                        Şifreniz:
+                        <ul>
+                            <li>En az 8 karakter uzunluğunda olmalıdır</li>
+                            <li>En az bir büyük harf içermelidir</li>
+                            <li>En az bir küçük harf içermelidir</li>
+                            <li>En az bir sayı içermelidir</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">Şifre Tekrar</label>
+                    <div class="input-group">
+                        <input type="password" id="confirm-password" name="confirmPassword" class="form-control" required>
+                        <div class="input-group-append">
+                            <i id="confirm-password-toggle" class="far fa-eye-slash"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="terms">
+                    <label>
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <span>Arabamon <a href="terms.html" target="_blank">Kullanım Şartları</a> ve <a href="privacy.html" target="_blank">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.</span>
+                    </label>
+                </div>
+                
+                <div class="terms">
+                    <label>
+                        <input type="checkbox" id="marketing" name="marketing">
+                        <span>Kampanya ve fırsatlardan haberdar olmak istiyorum.</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-submit">Kayıt Ol</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Veya şununla kayıt olun:</p>
+                <div class="social-auth">
+                    <a href="#" class="social-auth-btn facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-auth-btn google">
+                        <i class="fab fa-google"></i>
+                    </a>
+                    <a href="#" class="social-auth-btn apple">
+                        <i class="fab fa-apple"></i>
+                    </a>
+                </div>
+                
+                <div class="already-member">
+                    <p>Zaten üye misiniz? <a href="login.html">Giriş Yapın</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- API JS -->
+    <script src="js/api.js"></script>
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+    <!-- Auth JS -->
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Şifre göster/gizle
+            const passwordToggle = document.getElementById('password-toggle');
+            const passwordInput = document.getElementById('password');
+            
+            passwordToggle.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                passwordToggle.classList.toggle('fa-eye');
+                passwordToggle.classList.toggle('fa-eye-slash');
+            });
+            
+            // Şifre tekrar göster/gizle
+            const confirmPasswordToggle = document.getElementById('confirm-password-toggle');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            
+            confirmPasswordToggle.addEventListener('click', function() {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
+                confirmPasswordToggle.classList.toggle('fa-eye');
+                confirmPasswordToggle.classList.toggle('fa-eye-slash');
+            });
+            
+            // Kayıt formu gönderimi
+            const registerForm = document.getElementById('register-form');
+            const registerAlert = document.getElementById('register-alert');
+            
+            registerForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                const firstName = document.getElementById('first-name').value;
+                const lastName = document.getElementById('last-name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                const terms = document.getElementById('terms').checked;
+                const marketing = document.getElementById('marketing').checked;
+                
+                // Şifre kontrolü
+                if (password !== confirmPassword) {
+                    registerAlert.textContent = 'Şifreler eşleşmiyor.';
+                    registerAlert.style.display = 'block';
+                    return;
+                }
+                
+                // Şifre güçlülük kontrolü
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    registerAlert.textContent = 'Şifreniz gerekli kriterleri karşılamıyor.';
+                    registerAlert.style.display = 'block';
+                    return;
+                }
+                
+                // Kullanım şartları kontrolü
+                if (!terms) {
+                    registerAlert.textContent = 'Kullanım şartlarını kabul etmeniz gerekmektedir.';
+                    registerAlert.style.display = 'block';
+                    return;
+                }
+                
+                try {
+                    // Kayıt butonunu devre dışı bırak ve yükleniyor göster
+                    const submitButton = document.querySelector('.btn-submit');
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt Yapılıyor...';
+                    
+                    // Kayıt API çağrısı
+                    registerAlert.style.display = 'none';
+                    const userData = {
+                        firstName,
+                        lastName,
+                        email,
+                        password,
+                        phone,
+                        marketing
+                    };
+                    
+                    const response = await window.arabamonAPI.register(userData);
+                    
+                    // Başarılı kayıt durumu - kullanıcıyı ana sayfaya yönlendir
+                    setTimeout(() => {
+                        alert('Kaydınız başarıyla oluşturuldu! Ana sayfaya yönlendiriliyorsunuz.');
+                        window.location.href = 'index.html';
+                    }, 1000);
+                    
+                } catch (error) {
+                    // Kayıt butonunu tekrar aktif et
+                    const submitButton = document.querySelector('.btn-submit');
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Kayıt Ol';
+                    
+                    // Hata mesajını göster
+                    registerAlert.textContent = error.message || 'Kayıt yapılırken bir hata oluştu.';
+                    registerAlert.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

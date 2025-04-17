@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabamon - Araç Bakım Hizmetleri</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #ff6600;
+            --dark-color: #333333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .navbar-links {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-links li {
+            margin-left: 1.5rem;
+        }
+
+        .navbar-links li a {
+            color: var(--dark-color);
+        }
+
+        .navbar-links li a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar-right {
+            margin-left: auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), #004999);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/images/hero-pattern.png');
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Quick Appointment */
+        .quick-appointment {
+            background-color: white;
+            max-width: 850px;
+            margin: -80px auto 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .quick-appointment h2 {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .appointment-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+
+        .appointment-submit {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e55c00;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid currentColor;
+            color: var(--primary-color);
+        }
+
+        /* Features */
+        .features {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        /* Business Cards */
+        .popular-businesses {
+            padding: 4rem 0;
+        }
+
+        .businesses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .business-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .business-rating {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .business-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .business-address {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .business-description {
+            margin-bottom: 1rem;
+        }
+
+        .business-categories {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            gap: 0.5rem;
+        }
+
+        .category-tag {
+            background-color: var(--light-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--dark-color);
+        }
+
+        /* CTA Section */
+        .cta {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .cta h2 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .cta p {
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+            color: #ddd;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ddd;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #555;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 2rem auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .no-results {
+            text-align: center;
+            margin: 2rem 0;
+            color: #666;
+        }
+
+        /* Services */
+        .services {
+            padding: 4rem 0;
+            background-color: #f8f9fa;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .service-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .service-item h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .service-item p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+
+        /* Campaigns */
+        .campaigns {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        .campaigns-slider {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .campaign-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .campaign-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .campaign-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .campaign-content {
+            padding: 1.5rem;
+        }
+
+        .campaign-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .campaign-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .campaigns-actions {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+            }
+            
+            .navbar-links {
+                margin-top: 1rem;
+            }
+            
+            .navbar-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box input[type="text"] {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="/">Arabamon</a>
+                </div>
+                <ul class="navbar-links">
+                    <li><a href="/">Ana Sayfa</a></li>
+                    <li><a href="/businesses.html">İşletmeler</a></li>
+                    <li><a href="/about.html">Hakkımızda</a></li>
+                </ul>
+                <ul class="navbar-links navbar-right">
+                    <li><a href="/login.html">Giriş</a></li>
+                    <li><a href="/register.html">Kayıt Ol</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Araç Bakım ve Servis Hizmetleri</h1>
+            <p>Arabamon ile aracınız için en iyi servis noktalarını keşfedin, karşılaştırın ve randevunuzu oluşturun. Aracınızın bakımı artık çok daha kolay!</p>
+            <div class="search-box">
+                <form action="/businesses.html" method="get">
+                    <input type="text" name="location" placeholder="Konum giriniz (örn: Kadıköy, İstanbul)">
+                    <button type="submit" class="btn btn-primary">İşletme Ara</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="quick-appointment">
+        <h2>Hızlı Randevu Oluştur</h2>
+        <form id="quick-appointment-form" class="appointment-form">
+            <div class="form-group">
+                <label for="service-type">Hizmet Türü</label>
+                <select id="service-type" name="service-type" required>
+                    <option value="">Hizmet Seçiniz</option>
+                    <option value="oil-change">Yağ Değişimi</option>
+                    <option value="periodic-maintenance">Periyodik Bakım</option>
+                    <option value="brake-maintenance">Fren Bakımı</option>
+                    <option value="battery-replacement">Akü Değişimi</option>
+                    <option value="tire-service">Lastik Servisi</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="vehicle-type">Araç Tipi</label>
+                <select id="vehicle-type" name="vehicle-type" required>
+                    <option value="">Araç Seçiniz</option>
+                    <option value="sedan">Otomobil (Sedan)</option>
+                    <option value="hatchback">Otomobil (Hatchback)</option>
+                    <option value="suv">SUV</option>
+                    <option value="van">Minivan/Panelvan</option>
+                    <option value="pickup">Pickup</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="location">Konum</label>
+                <input type="text" id="location" name="location" placeholder="İlçe / Mahalle" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Tarih</label>
+                <input type="date" id="date" name="date" min="" required>
+            </div>
+            <div class="appointment-submit">
+                <button type="submit" class="btn btn-primary btn-lg">Randevu Bul</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Neden Arabamon?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Kolay Arama</h3>
+                    <p>Konumunuza en yakın servis noktalarını kolayca bulun.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Online Randevu</h3>
+                    <p>Dilediğiniz zaman online randevu oluşturun, zaman kazanın.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Değerlendirmeler</h3>
+                    <p>Diğer kullanıcıların değerlendirmelerini görün, doğru kararı verin.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Fiyat Karşılaştırma</h3>
+                    <p>Farklı servislerin fiyatlarını karşılaştırın, bütçenize uygun seçim yapın.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="popular-businesses">
+        <div class="container">
+            <h2 class="section-title">Popüler Servisler</h2>
+            <div class="alert-container"></div>
+            <div id="loading-spinner" class="loading-spinner"></div>
+            <div class="businesses-grid" id="popular-businesses-container">
+                <!-- API ile dinamik olarak doldurulacak -->
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>İşletme Sahibi misiniz?</h2>
+            <p>Arabamon'a işletmenizi ekleyerek daha fazla müşteriye ulaşın.</p>
+            <a href="/register.html?role=business" class="btn btn-secondary">İşletme Kaydı Oluştur</a>
+        </div>
+    </section>
+
+    <!-- Hizmetlerimiz Bölümü -->
+    <section class="services">
+        <div class="container">
+            <h2 class="section-title">Sunduğumuz Hizmetler</h2>
+            <p class="section-description">
+                Arabamon ile araç bakımı ve servis ihtiyaçlarınızı kolayca karşılayın. Uzman servislerden anında randevu alın.
+            </p>
+            
+            <div class="services-grid">
+                <div class="service-item">
+                    <div class="service-icon">
+                        <i class="fas fa-tire"></i>
+                    </div>
+                    <h3>Lastik Değişimi</h3>
+                    <p>Mevsim şartlarına uygun lastik değişimi, balans ve rot ayarı hizmetleri. Tüm lastik markaları ile profesyonel servis.</p>
+                    <a href="/businesses.html?service=tire-service" class="btn btn-outline">Servis Bul</a>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">
+                        <i class="fas fa-car-wash"></i>
+                    </div>
+                    <h3>Araç Yıkama</h3>
+                    <p>İç-dış detaylı temizlik, cilalama ve seramik kaplama hizmetleri. Aracınız ilk günkü parlaklığına kavuşsun.</p>
+                    <a href="/businesses.html?service=car-wash" class="btn btn-outline">Servis Bul</a>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Oto Ekspertiz</h3>
+                    <p>Kapsamlı araç sağlık kontrolü ve ekspertiz hizmetleri. Satın almadan önce aracınızın durumunu öğrenin.</p>
+                    <a href="/businesses.html?service=car-inspection" class="btn btn-outline">Servis Bul</a>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">
+                        <i class="fas fa-parking"></i>
+                    </div>
+                    <h3>Otopark</h3>
+                    <p>Günlük, haftalık ve aylık otopark hizmetleri. Güvenli ve uygun fiyatlı araç park çözümleri.</p>
+                    <a href="/businesses.html?service=parking" class="btn btn-outline">Servis Bul</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kampanyalar Bölümü -->
+    <section class="campaigns">
+        <div class="container">
+            <h2 class="section-title">Güncel Kampanyalar</h2>
+            <p class="section-description">
+                İşletmelerimizden özel indirim ve fırsatlar. Sınırlı süreli kampanyaları kaçırmayın!
+            </p>
+            
+            <div class="campaigns-slider">
+                <div class="campaign-card">
+                    <div class="campaign-image">
+                        <span class="discount-badge">%20 İndirim</span>
+                        <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Periyodik Bakım Kampanyası">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Periyodik Bakım Kampanyası</h3>
+                        <p>15 Ekim'e kadar tüm periyodik bakım işlemlerinde %20 indirim fırsatı!</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 7 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 15 İşletme</span>
+                        </div>
+                        <a href="/campaigns.html" class="btn btn-primary">Detayları Gör</a>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <div class="campaign-image">
+                        <span class="discount-badge">Ücretsiz Kontrol</span>
+                        <img src="https://images.unsplash.com/photo-1591439657848-9f4b55b9e05d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kış Hazırlık Paketi">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Kış Hazırlık Paketi</h3>
+                        <p>Lastik değişimi yaptıranlara ücretsiz kış bakım kontrolü hediye!</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 15 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 25 İşletme</span>
+                        </div>
+                        <a href="/campaigns.html" class="btn btn-primary">Detayları Gör</a>
+                    </div>
+                </div>
+                
+                <div class="campaign-card">
+                    <div class="campaign-image">
+                        <span class="discount-badge">2'si 1 Arada</span>
+                        <img src="https://images.unsplash.com/photo-1504222490345-c075b6008014?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Yıkama Kampanyası">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Detaylı İç-Dış Yıkama</h3>
+                        <p>Araç bakımı yaptıranlara detaylı iç-dış yıkama paketi %50 indirimli!</p>
+                        <div class="campaign-info">
+                            <span><i class="fas fa-clock"></i> Son 10 gün</span>
+                            <span><i class="fas fa-map-marker-alt"></i> 18 İşletme</span>
+                        </div>
+                        <a href="/campaigns.html" class="btn btn-primary">Detayları Gör</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="campaigns-actions">
+                <a href="/campaigns.html" class="btn btn-secondary">Tüm Kampanyaları Gör</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Arabamon</h3>
+                    <p>Araç bakım ve servis hizmetleri platformu.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="/">Ana Sayfa</a></li>
+                        <li><a href="/businesses.html">İşletmeler</a></li>
+                        <li><a href="/about.html">Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>info@arabamon.com</p>
+                    <p>+90 555 123 4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Arabamon. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Bugünün tarihini alıp, minimum tarih olarak ayarla
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('date').min = formattedDate;
+            
+            // Hızlı randevu formu gönderimi
+            const quickAppointmentForm = document.getElementById('quick-appointment-form');
+            quickAppointmentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const serviceType = document.getElementById('service-type').value;
+                const vehicleType = document.getElementById('vehicle-type').value;
+                const location = document.getElementById('location').value;
+                const date = document.getElementById('date').value;
+                
+                // Parametreleri URL'e ekle ve yönlendir
+                const searchParams = new URLSearchParams();
+                searchParams.append('service', serviceType);
+                searchParams.append('vehicle', vehicleType);
+                searchParams.append('location', location);
+                searchParams.append('date', date);
+                
+                window.location.href = `/businesses.html?${searchParams.toString()}`;
+            });
+            
+            // Popüler işletmeleri yükle
+            loadPopularBusinesses();
+            
+            function loadPopularBusinesses() {
+                const businessesContainer = document.getElementById('popular-businesses-container');
+                document.getElementById('loading-spinner').style.display = 'block';
+                
+                // Demo veriler (gerçek uygulamada API'den gelir)
+                const popularBusinesses = [
+                    {
+                        id: 1,
+                        name: 'Merkez Oto Servis',
+                        address: 'Atatürk Cad. No:123, Kadıköy/İstanbul',
+                        description: 'Tüm araç markalarına profesyonel bakım ve onarım hizmeti sunuyoruz.',
+                        rating: 4.8,
+                        categories: ['Motor', 'Bakım', 'Elektrik'],
+                        reviews: 45
+                    },
+                    {
+                        id: 2,
+                        name: 'Expert Auto Center',
+                        address: 'Bağdat Cad. No:45, Maltepe/İstanbul',
+                        description: 'Premium araç servisi ve bakım hizmetleri. Profesyonel ekip ile kaliteli hizmet.',
+                        rating: 4.6,
+                        categories: ['Kaporta', 'Boya', 'Detaylı Bakım'],
+                        reviews: 38
+                    },
+                    {
+                        id: 3,
+                        name: 'Yeşil Vadi Servis',
+                        address: 'Yeşilçam Sok. No:7, Beşiktaş/İstanbul',
+                        description: 'Elektrikli ve hibrit araçlar dahil tüm modellere özel bakım ve onarım.',
+                        rating: 4.7,
+                        categories: ['Elektrikli Araçlar', 'Şarj', 'Bakım'],
+                        reviews: 29
+                    }
+                ];
+                
+                // İşletmeleri yükleme simülasyonu
+                setTimeout(() => {
+                    document.getElementById('loading-spinner').style.display = 'none';
+                    
+                    // Kartları oluştur ve ekle
+                    let businessesHTML = '';
+                    popularBusinesses.forEach(business => {
+                        businessesHTML += `
+                            <div class="business-card">
+                                <div class="business-rating">${business.rating.toFixed(1)}</div>
+                                <h3>${business.name}</h3>
+                                <div class="business-address">
+                                    <i class="fas fa-map-marker-alt"></i> ${business.address}
+                                </div>
+                                <div class="business-description">${business.description}</div>
+                                <div class="business-categories">
+                                    ${business.categories.map(category => 
+                                        `<span class="category-tag">${category}</span>`
+                                    ).join('')}
+                                </div>
+                                <div class="business-actions">
+                                    <a href="/business.html?id=${business.id}" class="btn btn-outline">Detayları Gör</a>
+                                    <a href="/business.html?id=${business.id}#appointment-section" class="btn btn-primary">Randevu Al</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    if (businessesContainer) {
+                        businessesContainer.innerHTML = businessesHTML;
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html> 
