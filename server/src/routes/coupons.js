@@ -6,7 +6,8 @@ const {
   updateCoupon,
   deleteCoupon,
   validateCoupon,
-  redeemCoupon
+  redeemCoupon,
+  generateCouponBatch
 } = require('../controllers/coupons');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -23,6 +24,9 @@ router.route('/:id')
   .get(authorize('admin'), getCoupon)
   .put(authorize('admin'), updateCoupon)
   .delete(authorize('admin'), deleteCoupon);
+
+// Toplu kupon oluşturma
+router.post('/generate-batch', authorize('admin'), generateCouponBatch);
 
 // Kullanıcı rotaları
 router.post('/validate', validateCoupon);

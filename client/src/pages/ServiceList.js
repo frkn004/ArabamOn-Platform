@@ -33,6 +33,7 @@ const ServiceList = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
+        setLoading(true);
         // Eğer kategori seçilmişse, API'ye kategori parametresi ekle
         const url = selectedCategory 
           ? `/api/services?category=${encodeURIComponent(selectedCategory)}` 
@@ -46,9 +47,9 @@ const ServiceList = () => {
         
         const data = await res.json();
         setServices(data.data);
+        setLoading(false);
       } catch (err) {
         setError(err.message || 'Hizmetler yüklenemedi');
-      } finally {
         setLoading(false);
       }
     };

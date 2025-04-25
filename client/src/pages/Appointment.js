@@ -90,6 +90,24 @@ const Appointment = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
+  // Kullanıcı araçlarını getir
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      if (user) {
+        try {
+          const res = await api.get('/users/vehicles');
+          if (res.data.success) {
+            setVehicles(res.data.data);
+          }
+        } catch (err) {
+          console.error('Araçlar yüklenemedi:', err);
+        }
+      }
+    };
+    
+    fetchVehicles();
+  }, [user, api]);
+  
   // Kupon uygulama fonksiyonu
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
@@ -111,6 +129,7 @@ const Appointment = () => {
         setCouponData(res.data.data);
         setCouponApplied(true);
         setSuccess('Kupon başarıyla uygulandı!');
+        setTimeout(() => setSuccess(''), 3000);
       }
     } catch (err) {
       setCouponError(err.response?.data?.message || 'Kupon kodu geçersiz');
@@ -354,6 +373,70 @@ const Appointment = () => {
                   ></textarea>
                 </div>
                 
+                {/* Kupon Kodu Alanı */}
+                <div className="mb-4">
+                  <h5>Kupon Kodu</h5>
+                  <div className="card bg-light">
+                    <div className="card-body">
+                      {couponApplied ? (
+                        <div>
+                          <div className="alert alert-success mb-3">
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h5 className="mb-1">{couponData.code}</h5>
+                                <p className="mb-0">
+                                  {couponData.discountType === 'percentage' 
+                                    ? `%${couponData.discount} indirim` 
+                                    : couponData.discountType === 'amount' 
+                                      ? `${couponData.discount} TL indirim` 
+                                      : 'Hediye hizmet'}
+                                </p>
+                              </div>
+                              <button 
+                                type="button" 
+                                className="btn btn-sm btn-outline-danger"
+                                onClick={handleRemoveCoupon}
+                              >
+                                Kaldır
+                              </button>
+                            </div>
+                          </div>
+                          <div className="d-flex justify-content-between">
+                            <span>Toplam:</span>
+                            <span className="fw-bold">{calculatePrice()} TL</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="input-group">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Kupon kodunuzu girin"
+                              value={couponCode}
+                              onChange={(e) => setCouponCode(e.target.value)}
+                            />
+                            <button 
+                              className="btn btn-outline-primary" 
+                              type="button"
+                              onClick={handleApplyCoupon}
+                              disabled={applyingCoupon}
+                            >
+                              {applyingCoupon ? (
+                                <>
+                                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                  Kontrol Ediliyor...
+                                </>
+                              ) : 'Uygula'}
+                            </button>
+                          </div>
+                          {couponError && <div className="text-danger mt-2">{couponError}</div>}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="d-grid gap-2 mt-4">
                   <button 
                     type="submit" 
@@ -400,51 +483,6 @@ const Appointment = () => {
               </div>
               
               <hr />
-              
-              {/* Kupon kodu girişi */}
-              <div className="mb-3">
-                <label className="form-label">Kupon Kodu</label>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Kupon kodunuz varsa girin"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    disabled={couponApplied || applyingCoupon}
-                  />
-                  {!couponApplied ? (
-                    <button
-                      className="btn btn-outline-primary"
-                      type="button"
-                      onClick={handleApplyCoupon}
-                      disabled={applyingCoupon || !couponCode.trim()}
-                    >
-                      {applyingCoupon ? (
-                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                      ) : 'Uygula'}
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-outline-danger"
-                      type="button"
-                      onClick={handleRemoveCoupon}
-                    >
-                      Kaldır
-                    </button>
-                  )}
-                </div>
-                {couponError && <div className="text-danger small mt-1">{couponError}</div>}
-                {couponApplied && couponData && (
-                  <div className="alert alert-success mt-2 mb-0 py-2">
-                    <small>
-                      {couponData.discountType === 'percentage' && `%${couponData.discount} indirim`}
-                      {couponData.discountType === 'amount' && `${couponData.discount} TL indirim`}
-                      {couponData.discountType === 'gift_service' && 'Hediye hizmet'}
-                    </small>
-                  </div>
-                )}
-              </div>
               
               <div className="d-flex justify-content-between align-items-center">
                 <span>Toplam Fiyat:</span>

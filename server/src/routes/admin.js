@@ -9,7 +9,9 @@ const {
   deleteServiceProvider,
   getServices,
   getReviews,
-  updateAppointmentStatus
+  updateAppointmentStatus,
+  updateProviderTimeSlots,
+  updateProviderStatus
 } = require('../controllers/admin');
 
 const { protect, authorize } = require('../middleware/auth');
@@ -33,6 +35,8 @@ router.get('/providers', getServiceProviders);
 router.post('/providers', createServiceProvider);
 router.put('/providers/:id/approval', updateProviderApproval);
 router.delete('/providers/:id', deleteServiceProvider);
+router.put('/providers/:id/timeslots', updateProviderTimeSlots);
+router.put('/providers/:id/status', updateProviderStatus);
 
 // Randevu yönetimi
 router.get('/appointments', getAppointments);

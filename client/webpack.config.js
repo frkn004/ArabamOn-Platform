@@ -11,6 +11,13 @@ module.exports = {
   devServer: {
     port: 3000,
     historyApiFallback: true,
+    hot: false,
+    liveReload: false,
+    client: {
+      logging: 'error',
+      overlay: false,
+      progress: false
+    },
     proxy: [
       {
         context: ['/api'],

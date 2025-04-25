@@ -5,6 +5,7 @@ const {
   getApprovedReviews,
   getUserReviews,
   getProviderReviews,
+  getMyProviderReviews,
   createReview,
   approveReview
 } = require('../controllers/reviews');
@@ -23,6 +24,9 @@ router.route('/approved')
 
 router.route('/provider/:providerId')
   .get(getProviderReviews);
+
+router.route('/provider')
+  .get(protect, authorize('provider'), getMyProviderReviews);
 
 // Kullanıcı rotaları
 router.route('/user')

@@ -135,12 +135,39 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+// @desc    Giriş yapmış kullanıcının profil bilgilerini getir
+// @route   GET /api/users/me
+// @access  Private
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Kullanıcı bulunamadı'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Sunucu hatası',
+      error: error.message
+    });
+  }
+};
+
 // @desc    Araç ekle
 // @route   POST /api/users/vehicles
 // @access  Private
 exports.addVehicle = async (req, res) => {
   try {
-    const { make, model, year, plate } = req.body;
+    const { make, model, year, plate, color } = req.body;
     
     const user = await User.findById(req.user.id);
     
@@ -148,7 +175,8 @@ exports.addVehicle = async (req, res) => {
       make,
       model,
       year,
-      plate
+      plate,
+      color
     });
     
     await user.save();
@@ -177,6 +205,83 @@ exports.removeVehicle = async (req, res) => {
     user.vehicles = user.vehicles.filter(
       vehicle => vehicle._id.toString() !== req.params.id
     );
+    
+    await user.save();
+    
+    res.status(200).json({
+      success: true,
+      data: user.vehicles
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Sunucu hatası',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Kullanıcının araçlarını getir
+// @route   GET /api/users/vehicles
+// @access  Private
+exports.getVehicles = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Kullanıcı bulunamadı'
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      count: user.vehicles.length,
+      data: user.vehicles
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Sunucu hatası',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Araç güncelle
+// @route   PUT /api/users/vehicles/:id
+// @access  Private
+exports.updateVehicle = async (req, res) => {
+  try {
+    const { make, model, year, plate, color } = req.body;
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Kullanıcı bulunamadı'
+      });
+    }
+    
+    // Güncellenecek aracı bul
+    const vehicleIndex = user.vehicles.findIndex(
+      vehicle => vehicle._id.toString() === req.params.id
+    );
+    
+    if (vehicleIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Araç bulunamadı'
+      });
+    }
+    
+    // Araç özelliklerini güncelle
+    if (make) user.vehicles[vehicleIndex].make = make;
+    if (model) user.vehicles[vehicleIndex].model = model;
+    if (year) user.vehicles[vehicleIndex].year = year;
+    if (plate) user.vehicles[vehicleIndex].plate = plate;
+    if (color) user.vehicles[vehicleIndex].color = color;
     
     await user.save();
     

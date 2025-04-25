@@ -58,6 +58,11 @@ const Dashboard = () => {
   // Kullanıcılar için ekstra state
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('');
+  const [userTags, setUserTags] = useState({});
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importFile, setImportFile] = useState(null);
+  const [importPreview, setImportPreview] = useState([]);
+  const [importError, setImportError] = useState('');
 
   // Etiket yönetimi için state
   const [tags, setTags] = useState(['VIP', 'Kurumsal', 'Test', 'Yeni Üye', 'Aktif']);
@@ -90,9 +95,23 @@ const Dashboard = () => {
         setLoading(true);
         setError('');
 
+        if (!user || !user.token) {
+          console.error('Kullanıcı oturum bilgisi bulunamadı');
+          setError('Oturum süresi dolmuş olabilir. Lütfen tekrar giriş yapın.');
+          setLoading(false);
+          return;
+        }
+
         // İstatistikleri getir
-        const statsRes = await api.get('/admin/stats');
-        setStats(statsRes.data.data);
+        try {
+          console.log('Admin istatistikleri çekiliyor...');
+          const statsRes = await api.get('/admin/stats');
+          console.log('İstatistikler başarıyla alındı:', statsRes.data);
+          setStats(statsRes.data.data);
+        } catch (err) {
+          console.error('İstatistikler yüklenirken hata:', err);
+          console.error('Hata detayı:', err.response?.data || err.message);
+        }
 
         // Aktif tab'a göre veri çek
         if (activeTab === 'overview' || activeTab === 'providers') {
@@ -121,13 +140,15 @@ const Dashboard = () => {
 
         setLoading(false);
       } catch (err) {
+        console.error('Veri yüklenirken hata:', err);
+        console.error('Hata detayı:', err.response?.data || err.message);
         setError(err.response?.data?.message || 'Veri yüklenirken bir hata oluştu');
         setLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, [activeTab, api]);
+  }, [activeTab, api, user]);
 
   const fetchProviders = async () => {
     try {
@@ -137,11 +158,31 @@ const Dashboard = () => {
         url += `?approved=${filterStatus}`;
       }
       
+      console.log('Servis sağlayıcılar isteniyor:', url);
       const res = await api.get(url);
-      setProviders(res.data.data);
+      console.log('Servis sağlayıcı cevabı:', res.data);
+
+      // Veri yapısını kontrol et ve doğru değerlerle doldur
+      if (res.data && res.data.data) {
+        // Boş gelirse varsayılan değerler kullan
+        const providerData = res.data.data.map(provider => ({
+          ...provider,
+          companyName: provider.companyName || provider.name || 'İsimsiz Firma',
+          specialties: provider.specialties || [],
+          address: provider.address || { street: '', city: '', state: '', zipCode: '', country: 'Türkiye' },
+          contactPhone: provider.contactPhone || provider.phone || '-',
+          approved: provider.approved === null ? 'pending' : provider.approved
+        }));
+        setProviders(providerData);
+      } else {
+        console.error('Servis sağlayıcı verisi bulunamadı:', res.data);
+        setProviders([]);
+      }
     } catch (err) {
       console.error('Servis sağlayıcılar yüklenirken hata:', err);
+      console.error('Hata detayı:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Servis sağlayıcılar yüklenemedi');
+      setProviders([]); // Hata durumunda boş array ayarla
     }
   };
 
@@ -164,46 +205,149 @@ const Dashboard = () => {
 
   const fetchAppointments = async () => {
     try {
+      console.log('Randevular isteniyor...');
       const res = await api.get('/admin/appointments');
-      setAppointments(res.data.data);
+      console.log('Randevu cevabı:', res.data);
+      
+      if (res.data && res.data.data) {
+        // Veri yapısını güçlendir
+        const appointmentData = res.data.data.map(appointment => ({
+          ...appointment,
+          user: appointment.user || { name: 'Misafir', email: '-' },
+          provider: appointment.provider || { companyName: 'Belirtilmemiş', address: '-', phone: '-' },
+          service: appointment.service || { name: 'Belirtilmemiş', price: 0, duration: 0 },
+          date: appointment.date || new Date().toISOString(),
+          time: appointment.time || '00:00',
+          status: appointment.status || 'beklemede'
+        }));
+        setAppointments(appointmentData);
+      } else {
+        console.error('Randevu verisi bulunamadı:', res.data);
+        setAppointments([]);
+      }
     } catch (err) {
       console.error('Randevular yüklenirken hata:', err);
+      console.error('Hata detayı:', err.response?.data || err.message);
+      setAppointments([]); // Hata durumunda boş array ayarla
     }
   };
 
   const fetchServices = async () => {
     try {
+      console.log('Hizmetler isteniyor...');
       const res = await api.get('/admin/services');
-      setServices(res.data.data);
+      console.log('Hizmet cevabı:', res.data);
+      
+      if (res.data && res.data.data) {
+        // Veri yapısını güçlendir
+        const serviceData = res.data.data.map(service => ({
+          ...service,
+          name: service.name || 'İsimsiz Hizmet',
+          category: service.category || 'Diğer',
+          provider: service.provider || { companyName: 'Belirtilmemiş' },
+          price: service.price || 0,
+          duration: service.duration || 0,
+          description: service.description || '',
+          isActive: service.isActive !== undefined ? service.isActive : true
+        }));
+        setServices(serviceData);
+      } else {
+        console.error('Hizmet verisi bulunamadı:', res.data);
+        setServices([]);
+      }
     } catch (err) {
       console.error('Hizmetler yüklenirken hata:', err);
+      console.error('Hata detayı:', err.response?.data || err.message);
+      setServices([]); // Hata durumunda boş array ayarla
     }
   };
   
   const fetchUsers = async () => {
     try {
+      console.log('Kullanıcılar isteniyor...');
       const res = await api.get('/admin/users');
-      setUsers(res.data.data);
+      console.log('Kullanıcı cevabı:', res.data);
+      
+      if (res.data && res.data.data) {
+        // Veri yapısını güçlendir
+        const userData = res.data.data.map(user => ({
+          ...user,
+          name: user.name || 'İsimsiz Kullanıcı',
+          email: user.email || '-',
+          phone: user.phone || '-',
+          role: user.role || 'user',
+          isActive: user.isActive !== undefined ? user.isActive : true,
+          tags: user.tags || []
+        }));
+        setUsers(userData);
+      } else {
+        console.error('Kullanıcı verisi bulunamadı:', res.data);
+        setUsers([]);
+      }
     } catch (err) {
       console.error('Kullanıcılar yüklenirken hata:', err);
+      console.error('Hata detayı:', err.response?.data || err.message);
+      setUsers([]); // Hata durumunda boş array ayarla
     }
   };
   
   const fetchReviews = async () => {
     try {
+      console.log('Yorumlar isteniyor...');
       const res = await api.get('/admin/reviews');
-      setReviews(res.data.data);
+      console.log('Yorum cevabı:', res.data);
+      
+      if (res.data && res.data.data) {
+        // Veri yapısını güçlendir
+        const reviewData = res.data.data.map(review => ({
+          ...review,
+          user: review.user || { name: 'Misafir' },
+          provider: review.provider || { companyName: 'Belirtilmemiş' },
+          rating: review.rating || 0,
+          comment: review.comment || '',
+          createdAt: review.createdAt || new Date().toISOString()
+        }));
+        setReviews(reviewData);
+      } else {
+        console.error('Yorum verisi bulunamadı:', res.data);
+        setReviews([]);
+      }
     } catch (err) {
       console.error('Yorumlar yüklenirken hata:', err);
+      console.error('Hata detayı:', err.response?.data || err.message);
+      setReviews([]); // Hata durumunda boş array ayarla
     }
   };
 
   const fetchCoupons = async () => {
     try {
+      console.log('Kuponlar isteniyor...');
       const res = await api.get('/admin/coupons');
-      setCoupons(res.data.data);
+      console.log('Kupon cevabı:', res.data);
+      
+      if (res.data && res.data.data) {
+        // Veri yapısını güçlendir
+        const couponData = res.data.data.map(coupon => ({
+          ...coupon,
+          code: coupon.code || 'MISSING_CODE',
+          discount: coupon.discount || 0,
+          discountType: coupon.discountType || 'percentage',
+          validFrom: coupon.validFrom || new Date().toISOString(),
+          validUntil: coupon.validUntil || new Date(Date.now() + 30*24*60*60*1000).toISOString(),
+          minimumAmount: coupon.minimumAmount || 0,
+          usedCount: coupon.usedCount || 0,
+          maxUses: coupon.maxUses || null,
+          isActive: coupon.isActive !== undefined ? coupon.isActive : true
+        }));
+        setCoupons(couponData);
+      } else {
+        console.error('Kupon verisi bulunamadı:', res.data);
+        setCoupons([]);
+      }
     } catch (err) {
       console.error('Kupon kodları yüklenirken hata:', err);
+      console.error('Hata detayı:', err.response?.data || err.message);
+      setCoupons([]); // Hata durumunda boş array ayarla
     }
   };
 
@@ -459,26 +603,88 @@ const Dashboard = () => {
     }
     
     try {
-      await api.delete(`/admin/services/${id}`);
+      const res = await api.delete(`/services/${id}`);
       
-      // Listeden kaldır
-      setServices(services.filter(s => s._id !== id));
+      if (res.data.success) {
+        setServices(services.filter(service => service._id !== id));
+      }
     } catch (err) {
+      console.error('Hizmet silinirken hata:', err);
       setError(err.response?.data?.message || 'Hizmet silinemedi');
+    }
+  };
+
+  // Hizmet aktif/pasif durumunu değiştirme
+  const toggleServiceActive = async (id, currentStatus) => {
+    try {
+      const res = await api.put(`/services/${id}`, {
+        isActive: !currentStatus
+      });
+      
+      if (res.data.success) {
+        // Hizmetler listesini güncelle
+        setServices(services.map(service => 
+          service._id === id 
+            ? { ...service, isActive: !currentStatus } 
+            : service
+        ));
+      }
+    } catch (err) {
+      console.error('Hizmet durumu değiştirilirken hata:', err);
+      setError(err.response?.data?.message || 'Hizmet durumu güncellenemedi');
     }
   };
 
   // Kullanıcılar için ekstra işlemler
   const handleAddUserTag = async (userId, tag) => {
     try {
-      await api.put(`/admin/users/${userId}/tag`, { tag });
+      // Kullanıcıya etiket eklemek için API çağrısı
+      const res = await api.post(`/admin/users/${userId}/tags`, { tag });
       
-      // Kullanıcıyı güncelle
-      setUsers(users.map(u => 
-        u._id === userId ? { ...u, tag } : u
-      ));
+      if (res.data.success) {
+        // Kullanıcı etiketlerini güncelle
+        setUserTags({
+          ...userTags,
+          [userId]: [...(userTags[userId] || []), tag]
+        });
+        
+        // Kullanıcılar listesini güncelle
+        setUsers(users.map(u => 
+          u._id === userId 
+            ? { ...u, tags: [...(u.tags || []), tag] } 
+            : u
+        ));
+        
+        setSuccess(`${tag} etiketi kullanıcıya eklendi`);
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Kullanıcı etiketi eklenemedi');
+      setError(err.response?.data?.message || 'Etiket eklenemedi');
+    }
+  };
+
+  const handleRemoveUserTag = async (userId, tag) => {
+    try {
+      // Kullanıcıdan etiket kaldırmak için API çağrısı
+      const res = await api.delete(`/admin/users/${userId}/tags/${tag}`);
+      
+      if (res.data.success) {
+        // Kullanıcı etiketlerini güncelle
+        setUserTags({
+          ...userTags,
+          [userId]: (userTags[userId] || []).filter(t => t !== tag)
+        });
+        
+        // Kullanıcılar listesini güncelle
+        setUsers(users.map(u => 
+          u._id === userId 
+            ? { ...u, tags: (u.tags || []).filter(t => t !== tag) } 
+            : u
+        ));
+        
+        setSuccess(`${tag} etiketi kullanıcıdan kaldırıldı`);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Etiket kaldırılamadı');
     }
   };
 
@@ -508,6 +714,229 @@ const Dashboard = () => {
   // Etiket silme fonksiyonu
   const handleDeleteTag = (tagToDelete) => {
     setTags(tags.filter(tag => tag !== tagToDelete));
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    setImportFile(file);
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          setImportError('');
+          // CSV dosyasını parse et
+          const csvData = evt.target.result;
+          const lines = csvData.split('\n');
+          const headers = lines[0].split(',').map(h => h.trim());
+          
+          // Gerekli sütunları kontrol et
+          const requiredColumns = ['name', 'email', 'phone', 'role'];
+          const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+          
+          if (missingColumns.length > 0) {
+            setImportError(`Eksik sütunlar: ${missingColumns.join(', ')}`);
+            setImportPreview([]);
+            return;
+          }
+          
+          // Önizleme verisini oluştur - ilk 5 satır
+          const previewData = [];
+          for (let i = 1; i < Math.min(lines.length, 6); i++) {
+            if (lines[i].trim() === '') continue;
+            
+            const values = lines[i].split(',').map(val => val.trim());
+            const row = {};
+            
+            headers.forEach((header, index) => {
+              row[header] = values[index] || '';
+            });
+            
+            previewData.push(row);
+          }
+          
+          setImportPreview(previewData);
+        } catch (err) {
+          setImportError('Dosya format hatası: ' + err.message);
+          setImportPreview([]);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleImportUsers = async () => {
+    if (!importFile) {
+      setImportError('Lütfen bir dosya seçin');
+      return;
+    }
+    
+    try {
+      const formData = new FormData();
+      formData.append('usersFile', importFile);
+      
+      const res = await api.post('/admin/users/import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      if (res.data.success) {
+        setSuccess(`${res.data.data.imported} kullanıcı başarıyla içe aktarıldı`);
+        setImportModalOpen(false);
+        setImportFile(null);
+        setImportPreview([]);
+        
+        // Kullanıcı listesini yenile
+        fetchUsers();
+      }
+    } catch (err) {
+      setImportError(err.response?.data?.message || 'Kullanıcılar içe aktarılamadı');
+    }
+  };
+
+  const closeModal = () => {
+    setShowProviderDetail(false);
+    setSelectedProvider(null);
+    setTimeSlots({});
+    setEditingTimeSlots(false);
+    setActiveModalTab('info');
+  };
+
+  // Aktif sekmeye göre içerik render et
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="overview-tab">
+            <div className="row">
+              <div className="col-md-3 mb-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Kullanıcılar</h5>
+                    <h2 className="card-text">{stats.users}</h2>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Servis Sağlayıcılar</h5>
+                    <h2 className="card-text">{stats.providers}</h2>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Servisler</h5>
+                    <h2 className="card-text">{stats.services}</h2>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 mb-4">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Randevular</h5>
+                    <h2 className="card-text">{stats.appointments}</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      case 'providers':
+        return (
+          <div className="providers-tab">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h3>Servis Sağlayıcılar</h3>
+              <div>
+                <select
+                  className="form-select me-2 d-inline-block w-auto"
+                  value={filterStatus}
+                  onChange={handleStatusFilterChange}
+                >
+                  <option value="all">Tümü</option>
+                  <option value="true">Onaylanmış</option>
+                  <option value="false">Reddedilmiş</option>
+                  <option value="pending">Onay Bekleyen</option>
+                </select>
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => setShowAddForm(true)}
+                >
+                  Yeni Ekle
+                </button>
+              </div>
+            </div>
+            
+            <div className="table-responsive">
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Firma Adı</th>
+                    <th>Adres</th>
+                    <th>Telefon</th>
+                    <th>Durum</th>
+                    <th>İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {providers.map(provider => (
+                    <tr key={provider._id}>
+                      <td>{provider.companyName}</td>
+                      <td>{provider.address.street || provider.address}, {provider.address.city || provider.city}</td>
+                      <td>{provider.contactPhone || provider.phone}</td>
+                      <td>
+                        {provider.approved === true ? (
+                          <span className="badge bg-success">Onaylandı</span>
+                        ) : provider.approved === false ? (
+                          <span className="badge bg-danger">Reddedildi</span>
+                        ) : (
+                          <span className="badge bg-warning">Onay Bekliyor</span>
+                        )}
+                      </td>
+                      <td>
+                        <button 
+                          className="btn btn-sm btn-info me-1"
+                          onClick={() => handleProviderClick(provider)}
+                        >
+                          Detay
+                        </button>
+                        {provider.approved === null && (
+                          <>
+                            <button 
+                              className="btn btn-sm btn-success me-1"
+                              onClick={() => handleProviderApproval(provider._id, true)}
+                            >
+                              Onayla
+                            </button>
+                            <button 
+                              className="btn btn-sm btn-danger me-1"
+                              onClick={() => handleProviderApproval(provider._id, false)}
+                            >
+                              Reddet
+                            </button>
+                          </>
+                        )}
+                        <button 
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleDeleteProvider(provider._id)}
+                        >
+                          Sil
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      // Diğer sekmelerin içeriği burada eklenecek
+      default:
+        return null;
+    }
   };
 
   if (loading) {
@@ -979,15 +1408,15 @@ const Dashboard = () => {
                               </td>
                               <td>
                                 <span className={`badge bg-${
-                                  appointment.status === 'onaylandı' ? 'success' :
-                                  appointment.status === 'beklemede' ? 'warning' :
-                                  appointment.status === 'iptal edildi' ? 'danger' :
-                                  appointment.status === 'tamamlandı' ? 'info' : 'secondary'
+                                  appointment.status === 'confirmed' ? 'success' :
+                                  appointment.status === 'pending' ? 'warning' :
+                                  appointment.status === 'completed' ? 'info' :
+                                  appointment.status === 'cancelled' ? 'danger' : 'secondary'
                                 }`}>
-                                  {appointment.status === 'onaylandı' ? 'Onaylandı' :
-                                   appointment.status === 'beklemede' ? 'Beklemede' :
-                                   appointment.status === 'iptal edildi' ? 'İptal Edildi' :
-                                   appointment.status === 'tamamlandı' ? 'Tamamlandı' : appointment.status}
+                                  {appointment.status === 'confirmed' ? 'Onaylandı' :
+                                   appointment.status === 'pending' ? 'Beklemede' :
+                                   appointment.status === 'completed' ? 'Tamamlandı' :
+                                   appointment.status === 'cancelled' ? 'İptal Edildi' : appointment.status}
                                 </span>
                               </td>
                               <td>
@@ -1147,8 +1576,8 @@ const Dashboard = () => {
                         <thead>
                           <tr>
                             <th>Hizmet Adı</th>
-                            <th>Servis Sağlayıcı</th>
                             <th>Kategori</th>
+                            <th>Servis Sağlayıcı</th>
                             <th>Fiyat</th>
                             <th>Süre (dk)</th>
                             <th>Durum</th>
@@ -1159,12 +1588,10 @@ const Dashboard = () => {
                           {services.map(service => (
                             <tr key={service._id}>
                               <td>{service.name}</td>
+                              <td>{service.category}</td>
                               <td>{service.provider?.companyName}</td>
-                              <td>
-                                <span className="badge bg-info">{service.category}</span>
-                              </td>
                               <td>{service.price} TL</td>
-                              <td>{service.duration}</td>
+                              <td>{service.duration} dk</td>
                               <td>
                                 <span className={`badge ${service.isActive ? 'bg-success' : 'bg-danger'}`}>
                                   {service.isActive ? 'Aktif' : 'Pasif'}
@@ -1172,19 +1599,23 @@ const Dashboard = () => {
                               </td>
                               <td>
                                 <div className="btn-group" role="group">
-                                  <button 
+                                  <button
+                                    className={`btn btn-sm btn-${service.isActive ? 'warning' : 'success'}`}
+                                    onClick={() => toggleServiceActive(service._id, service.isActive)}
+                                  >
+                                    {service.isActive ? 'Pasife Al' : 'Aktifleştir'}
+                                  </button>
+                                  <button
                                     className="btn btn-sm btn-primary"
                                     onClick={() => handleEditService(service)}
-                                    title="Hizmeti düzenle"
                                   >
-                                    <i className="bi bi-pencil"></i>
+                                    <i className="bi bi-pencil"></i> Düzenle
                                   </button>
-                                  <button 
+                                  <button
                                     className="btn btn-sm btn-danger"
                                     onClick={() => handleDeleteService(service._id)}
-                                    title="Hizmeti sil"
                                   >
-                                    <i className="bi bi-trash"></i>
+                                    <i className="bi bi-trash"></i> Sil
                                   </button>
                                 </div>
                               </td>
@@ -1202,55 +1633,72 @@ const Dashboard = () => {
           {/* Kullanıcılar */}
           {activeTab === 'users' && (
             <>
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3>Kullanıcılar</h3>
-                <div className="d-flex gap-2">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Kullanıcı ara..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <select
-                    className="form-select"
-                    value={filterRole}
-                    onChange={(e) => setFilterRole(e.target.value)}
-                  >
-                    <option value="">Tüm Roller</option>
-                    <option value="user">Kullanıcılar</option>
-                    <option value="provider">Servis Sağlayıcılar</option>
-                    <option value="admin">Adminler</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <button 
-                  className="btn btn-outline-primary btn-sm"
-                  onClick={() => setShowTagManager(!showTagManager)}
-                >
-                  {showTagManager ? 'Etiket Yöneticisini Kapat' : 'Etiket Yöneticisi'}
-                </button>
-              </div>
-              
               <div className="card shadow-sm">
+                <div className="card-header bg-white d-flex justify-content-between align-items-center">
+                  <h5 className="mb-0">Kullanıcı Yönetimi</h5>
+                  <div className="btn-group">
+                    <button
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => setImportModalOpen(true)}
+                    >
+                      <i className="bi bi-file-earmark-arrow-up me-1"></i>
+                      CSV/Excel İçe Aktar
+                    </button>
+                    <button
+                      className="btn btn-outline-success btn-sm"
+                      onClick={() => setShowTagManager(true)}
+                    >
+                      <i className="bi bi-tags me-1"></i>
+                      Etiketleri Yönet
+                    </button>
+                  </div>
+                </div>
                 <div className="card-body">
-                  {users.length === 0 ? (
+                  <div className="row mb-3">
+                    <div className="col-md-8">
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bi bi-search"></i>
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="İsim, e-posta veya telefon ile ara..."
+                          value={searchTerm}
+                          onChange={e => setSearchTerm(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <select
+                        className="form-select"
+                        value={filterRole}
+                        onChange={e => setFilterRole(e.target.value)}
+                      >
+                        <option value="">Tüm Roller</option>
+                        <option value="user">Kullanıcılar</option>
+                        <option value="provider">Servis Sağlayıcılar</option>
+                        <option value="admin">Yöneticiler</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  {filteredUsers.length === 0 ? (
                     <div className="alert alert-info">
-                      Henüz bir kullanıcı bulunmuyor.
+                      <i className="bi bi-info-circle me-2"></i>
+                      Arama kriterlerine uygun kullanıcı bulunamadı.
                     </div>
                   ) : (
                     <div className="table-responsive">
                       <table className="table table-hover">
-                        <thead>
+                        <thead className="table-light">
                           <tr>
-                            <th>Adı</th>
+                            <th>Kullanıcı</th>
                             <th>E-posta</th>
                             <th>Telefon</th>
                             <th>Rol</th>
-                            <th>Etiket</th>
-                            <th>Kayıt Tarihi</th>
+                            <th>Etiketler</th>
+                            <th>Durum</th>
                             <th>İşlemler</th>
                           </tr>
                         </thead>
@@ -1259,51 +1707,72 @@ const Dashboard = () => {
                             <tr key={user._id}>
                               <td>{user.name}</td>
                               <td>{user.email}</td>
-                              <td>{user.phone}</td>
+                              <td>{user.phone || '-'}</td>
                               <td>
                                 <span className={`badge ${
-                                  user.role === 'admin' ? 'bg-danger' : 
-                                  user.role === 'provider' ? 'bg-success' : 'bg-primary'
+                                  user.role === 'admin' ? 'bg-danger' :
+                                  user.role === 'provider' ? 'bg-primary' :
+                                  'bg-success'
                                 }`}>
-                                  {user.role === 'admin' ? 'Admin' : 
-                                   user.role === 'provider' ? 'Servis Sağlayıcı' : 'Kullanıcı'}
+                                  {user.role === 'admin' ? 'Yönetici' :
+                                   user.role === 'provider' ? 'Servis Sağlayıcı' :
+                                   'Kullanıcı'}
                                 </span>
                               </td>
                               <td>
-                                <div className="dropdown">
-                                  <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    {user.tag || 'Etiket Ekle'}
-                                  </button>
-                                  <ul className="dropdown-menu">
-                                    {tags.map((tag, index) => (
-                                      <li key={index}>
-                                        <button 
-                                          className="dropdown-item" 
-                                          onClick={() => handleAddUserTag(user._id, tag)}
-                                        >
-                                          {tag}
-                                        </button>
-                                      </li>
-                                    ))}
-                                    <li><hr className="dropdown-divider" /></li>
-                                    <li>
+                                <div className="d-flex gap-1 flex-wrap">
+                                  {(user.tags || []).map(tag => (
+                                    <span key={tag} className="badge bg-info">
+                                      {tag} 
                                       <button 
-                                        className="dropdown-item" 
-                                        onClick={() => handleAddUserTag(user._id, '')}
-                                      >
-                                        Etiket Kaldır
-                                      </button>
-                                    </li>
-                                  </ul>
+                                        className="btn-close btn-close-white ms-1 p-0" 
+                                        style={{ fontSize: '0.5rem' }}
+                                        onClick={() => handleRemoveUserTag(user._id, tag)}
+                                      ></button>
+                                    </span>
+                                  ))}
+                                  <div className="dropdown">
+                                    <button 
+                                      className="btn btn-sm btn-outline-secondary py-0 px-1" 
+                                      type="button" 
+                                      data-bs-toggle="dropdown"
+                                    >
+                                      <i className="bi bi-plus-circle"></i>
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                      {tags.map(tag => (
+                                        <li key={tag}>
+                                          <button 
+                                            className="dropdown-item" 
+                                            onClick={() => handleAddUserTag(user._id, tag)}
+                                            disabled={(user.tags || []).includes(tag)}
+                                          >
+                                            {tag}
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 </div>
                               </td>
-                              <td>{new Date(user.createdAt).toLocaleDateString('tr-TR')}</td>
                               <td>
-                                <div className="btn-group" role="group">
+                                <span className={`badge ${user.isActive ? 'bg-success' : 'bg-secondary'}`}>
+                                  {user.isActive ? 'Aktif' : 'Pasif'}
+                                </span>
+                              </td>
+                              <td>
+                                <div className="btn-group">
                                   <button 
-                                    className="btn btn-sm btn-danger"
+                                    className="btn btn-sm btn-outline-primary"
+                                    onClick={() => {
+                                      // Kullanıcı detayları görüntüleme veya düzenleme modal'ı açılabilir
+                                    }}
+                                  >
+                                    <i className="bi bi-pencil"></i>
+                                  </button>
+                                  <button 
+                                    className="btn btn-sm btn-outline-danger"
                                     onClick={() => handleDeleteUser(user._id)}
-                                    title="Kullanıcıyı sil"
                                   >
                                     <i className="bi bi-trash"></i>
                                   </button>
@@ -1318,7 +1787,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {showTagManager && activeTab === 'users' && (
+              {showTagManager && (
                 <div className="card shadow-sm mb-4">
                   <div className="card-header">
                     <h5 className="mb-0">Etiket Yöneticisi</h5>
@@ -1337,24 +1806,27 @@ const Dashboard = () => {
                           className="btn btn-outline-primary" 
                           type="button"
                           onClick={handleAddTag}
+                          disabled={!newTag.trim()}
                         >
                           Ekle
                         </button>
                       </div>
                     </div>
                     
-                    <div className="d-flex flex-wrap gap-2">
-                      {tags.map((tag, index) => (
-                        <div key={index} className="badge bg-light text-dark p-2 d-flex align-items-center">
-                          {tag}
-                          <button 
-                            className="btn-close ms-2" 
-                            style={{ fontSize: '0.5rem' }}
-                            onClick={() => handleDeleteTag(tag)}
-                            aria-label="Etiketi kaldır"
-                          ></button>
-                        </div>
-                      ))}
+                    <div className="mb-3">
+                      <label className="form-label">Mevcut Etiketler</label>
+                      <div className="d-flex flex-wrap gap-2">
+                        {tags.map(tag => (
+                          <div key={tag} className="badge bg-info p-2 d-flex align-items-center">
+                            {tag}
+                            <button 
+                              className="btn-close ms-2" 
+                              style={{ fontSize: '0.7rem' }}
+                              onClick={() => handleDeleteTag(tag)}
+                            ></button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1654,6 +2126,170 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Etiket Yönetim Modalı */}
+      {showTagManager && (
+        <div className="modal show fade d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Etiketleri Yönet</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => setShowTagManager(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label htmlFor="newTag" className="form-label">Yeni Etiket Ekle</label>
+                  <div className="input-group">
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      id="newTag" 
+                      value={newTag}
+                      onChange={e => setNewTag(e.target.value)}
+                    />
+                    <button 
+                      className="btn btn-primary" 
+                      type="button"
+                      onClick={handleAddTag}
+                      disabled={!newTag.trim()}
+                    >
+                      Ekle
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="mb-3">
+                  <label className="form-label">Mevcut Etiketler</label>
+                  <div className="d-flex flex-wrap gap-2">
+                    {tags.map(tag => (
+                      <div key={tag} className="badge bg-info p-2 d-flex align-items-center">
+                        {tag}
+                        <button 
+                          className="btn-close ms-2" 
+                          style={{ fontSize: '0.7rem' }}
+                          onClick={() => handleDeleteTag(tag)}
+                        ></button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => setShowTagManager(false)}
+                >
+                  Kapat
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop fade show"></div>
+        </div>
+      )}
+
+      {/* Kullanıcı İçe Aktarma Modalı */}
+      {importModalOpen && (
+        <div className="modal show fade d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Kullanıcı İçe Aktar</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => {
+                    setImportModalOpen(false);
+                    setImportFile(null);
+                    setImportPreview([]);
+                    setImportError('');
+                  }}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label htmlFor="importFile" className="form-label">CSV veya Excel Dosyası</label>
+                  <input 
+                    type="file" 
+                    className="form-control" 
+                    id="importFile" 
+                    accept=".csv,.xlsx,.xls"
+                    onChange={handleFileUpload}
+                  />
+                  <small className="text-muted">
+                    Dosya formatı: name, email, phone, role (zorunlu sütunlar)
+                  </small>
+                </div>
+                
+                {importError && (
+                  <div className="alert alert-danger">
+                    <i className="bi bi-exclamation-triangle me-2"></i>
+                    {importError}
+                  </div>
+                )}
+                
+                {importPreview.length > 0 && (
+                  <div className="mt-4">
+                    <h6>Önizleme</h6>
+                    <div className="table-responsive">
+                      <table className="table table-sm table-bordered">
+                        <thead className="table-light">
+                          <tr>
+                            {Object.keys(importPreview[0]).map(header => (
+                              <th key={header}>{header}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {importPreview.map((row, index) => (
+                            <tr key={index}>
+                              {Object.values(row).map((value, i) => (
+                                <td key={i}>{value}</td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="alert alert-info small">
+                      <i className="bi bi-info-circle me-2"></i>
+                      Toplam satır sayısı: {importFile ? importFile.size : 0} bayt
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => {
+                    setImportModalOpen(false);
+                    setImportFile(null);
+                    setImportPreview([]);
+                    setImportError('');
+                  }}
+                >
+                  İptal
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary"
+                  onClick={handleImportUsers}
+                  disabled={!importFile || importError}
+                >
+                  İçe Aktar
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop fade show"></div>
+        </div>
+      )}
     </div>
   );
 };

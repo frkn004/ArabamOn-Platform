@@ -4,6 +4,8 @@ const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
 const Review = require('../models/Review');
 const { createNotification } = require('./notifications');
+const asyncHandler = require('express-async-handler');
+const ErrorResponse = require('../utils/errorResponse');
 
 // @desc    Admin istatistikleri getir
 // @route   GET /api/admin/stats
@@ -323,4 +325,60 @@ exports.updateAppointmentStatus = async (req, res) => {
       error: error.message
     });
   }
-}; 
+};
+
+// @desc    Admin olarak servis sağlayıcı zaman dilimlerini güncelle
+// @route   PUT /api/admin/providers/:id/timeslots
+// @access  Private/Admin
+exports.updateProviderTimeSlots = asyncHandler(async (req, res, next) => {
+  const serviceProvider = await ServiceProvider.findById(req.params.id);
+
+  if (!serviceProvider) {
+    return next(
+      new ErrorResponse(`ID'si ${req.params.id} olan servis sağlayıcı bulunamadı`, 404)
+    );
+  }
+
+  // Zaman dilimlerini güncelle
+  const updatedServiceProvider = await ServiceProvider.findByIdAndUpdate(
+    req.params.id,
+    { timeSlots: req.body.timeSlots },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    data: updatedServiceProvider
+  });
+});
+
+// @desc    Admin olarak servis sağlayıcı durumunu (açık/kapalı) güncelle
+// @route   PUT /api/admin/providers/:id/status
+// @access  Private/Admin
+exports.updateProviderStatus = asyncHandler(async (req, res, next) => {
+  const serviceProvider = await ServiceProvider.findById(req.params.id);
+
+  if (!serviceProvider) {
+    return next(
+      new ErrorResponse(`ID'si ${req.params.id} olan servis sağlayıcı bulunamadı`, 404)
+    );
+  }
+
+  // İsOpen durumunu güncelle
+  const updatedServiceProvider = await ServiceProvider.findByIdAndUpdate(
+    req.params.id,
+    { isOpen: req.body.isOpen },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    data: updatedServiceProvider
+  });
+}); 

@@ -10,13 +10,16 @@ const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Tüm rotaları bir gruba topla ve protect middleware'ini uygula
+router.use(protect);
+
 router.route('/')
-  .get(protect, getVehicles)
-  .post(protect, createVehicle);
+  .get(getVehicles)
+  .post(createVehicle);
 
 router.route('/:id')
-  .get(protect, getVehicle)
-  .put(protect, updateVehicle)
-  .delete(protect, deleteVehicle);
+  .get(getVehicle)
+  .put(updateVehicle)
+  .delete(deleteVehicle);
 
 module.exports = router; 

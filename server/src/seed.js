@@ -36,18 +36,26 @@ const seedDatabase = async () => {
     // Kullanıcılar oluştur
     const adminUser = await User.create({
       name: 'Admin Kullanıcı',
-      email: 'admin@example.com',
-      password: '123456',
+      email: 'admin@arabamon.com',
+      password: 'admin123',
       phone: '5551234567',
       role: 'admin'
     });
     
     const providerUser1 = await User.create({
-      name: 'Servis Sağlayıcı 1',
-      email: 'provider1@example.com',
-      password: '123456',
+      name: 'Servis Sağlayıcı',
+      email: 'provider@arabamon.com',
+      password: 'provider123',
       phone: '5551234568',
       role: 'provider'
+    });
+    
+    const normalUser1 = await User.create({
+      name: 'Test Kullanıcı',
+      email: 'user@arabamon.com',
+      password: 'user123',
+      phone: '5551234573',
+      role: 'user'
     });
     
     const providerUser2 = await User.create({
@@ -80,14 +88,6 @@ const seedDatabase = async () => {
       password: '123456',
       phone: '5551234572',
       role: 'provider'
-    });
-    
-    const normalUser1 = await User.create({
-      name: 'Test Kullanıcı 1',
-      email: 'user1@example.com',
-      password: '123456',
-      phone: '5551234573',
-      role: 'user'
     });
     
     const normalUser2 = await User.create({
@@ -964,7 +964,7 @@ const seedDatabase = async () => {
     // 2. Tek kullanımlık kupon - Bakım hizmetlerinde 500 TL indirim
     const singleUseCoupon = await Coupon.create({
       code: 'BAKIM500',
-      discount: 500,
+      discount: 100,
       discountType: 'amount',
       validFrom: new Date(),
       validUntil: new Date(new Date().setMonth(new Date().getMonth() + 1)), // 1 ay geçerli

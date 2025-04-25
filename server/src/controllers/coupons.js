@@ -287,4 +287,94 @@ exports.redeemCoupon = async (req, res) => {
       error: error.message
     });
   }
+};
+
+// @desc    Çoklu kupon kodları oluştur
+// @route   POST /api/coupons/generate-batch
+// @access  Private/Admin
+exports.generateCouponBatch = async (req, res) => {
+  try {
+    const {
+      prefix,
+      count = 1,
+      discount,
+      discountType = 'percentage',
+      validFrom,
+      validUntil,
+      maxUses,
+      isSingleUse = false,
+      minimumAmount = 0,
+      appliesTo = { categories: [], services: [], providers: [] }
+    } = req.body;
+    
+    if (!prefix) {
+      return res.status(400).json({
+        success: false,
+        message: 'Kupon ön eki gereklidir'
+      });
+    }
+    
+    if (!discount) {
+      return res.status(400).json({
+        success: false,
+        message: 'İndirim miktarı gereklidir'
+      });
+    }
+    
+    if (!validUntil) {
+      return res.status(400).json({
+        success: false,
+        message: 'Geçerlilik süresi gereklidir'
+      });
+    }
+    
+    // Maksimum 100 adet kupon oluşturulabilir
+    const couponCount = Math.min(count, 100);
+    const createdCoupons = [];
+    
+    for (let i = 0; i < couponCount; i++) {
+      // 4 haneli rastgele sayı oluştur
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      
+      // Ön ek + random sayı formatında kod oluştur
+      const code = `${prefix}${randomSuffix}`;
+      
+      try {
+        const couponData = {
+          code,
+          discount,
+          discountType,
+          validFrom: validFrom || Date.now(),
+          validUntil,
+          maxUses,
+          isSingleUse,
+          minimumAmount,
+          appliesTo,
+          createdBy: req.user.id
+        };
+        
+        const coupon = await Coupon.create(couponData);
+        createdCoupons.push(coupon);
+      } catch (err) {
+        // Aynı kodun zaten var olması durumunda, döngüyü tekrarla
+        if (err.code === 11000) {
+          i--; // Bu iterasyonu tekrarla
+          continue;
+        }
+        throw err;
+      }
+    }
+    
+    res.status(201).json({
+      success: true,
+      count: createdCoupons.length,
+      data: createdCoupons
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Sunucu hatası',
+      error: error.message
+    });
+  }
 }; 

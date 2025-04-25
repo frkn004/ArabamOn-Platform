@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API URL
+  // API URL - proxy yerine doğrudan URL kullanıyoruz
   const API_URL = 'http://localhost:3001/api';
 
   // Axios instance
@@ -29,14 +28,16 @@ export const AuthProvider = ({ children }) => {
     baseURL: API_URL,
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: false
   });
 
   // Request interceptor
   api.interceptors.request.use(
     (config) => {
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      const currentToken = localStorage.getItem('token');
+      if (currentToken) {
+        config.headers.Authorization = `Bearer ${currentToken}`;
       }
       return config;
     },
@@ -49,7 +50,9 @@ export const AuthProvider = ({ children }) => {
   api.interceptors.response.use(
     (response) => response,
     (error) => {
+      console.error("API Hatası:", error.response?.status, error.response?.data || error.message);
       if (error.response && error.response.status === 401) {
+        console.log("401 hatası - oturum kapatılıyor");
         logout();
       }
       return Promise.reject(error);
@@ -60,10 +63,13 @@ export const AuthProvider = ({ children }) => {
   const loadUser = async () => {
     if (token) {
       try {
+        console.log("Kullanıcı bilgisi yükleniyor...");
         const res = await api.get('/auth/me');
-        setUser(res.data.data);
+        console.log("Kullanıcı bilgisi:", res.data);
+        setUser({...res.data.data, token});
         setIsAuthenticated(true);
       } catch (err) {
+        console.error("Kullanıcı yükleme hatası:", err.response?.data || err.message);
         localStorage.removeItem('token');
         setToken(null);
         setUser(null);
@@ -82,14 +88,19 @@ export const AuthProvider = ({ children }) => {
   // Giriş yap
   const login = async (email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      console.log("Giriş yapılıyor:", `${API_URL}/auth/login`);
+      
+      const res = await api.post('/auth/login', { email, password });
+      
+      console.log("Giriş başarılı:", res.data);
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
-      setUser(res.data.user);
+      setUser({...res.data.user, token: res.data.token});
       setIsAuthenticated(true);
       setError(null);
       return res.data;
     } catch (err) {
+      console.error("Giriş hatası:", err.response?.data || err.message);
       setError(err.response?.data?.message || 'Giriş başarısız');
       throw err;
     }
@@ -98,10 +109,10 @@ export const AuthProvider = ({ children }) => {
   // Kayıt ol
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/register`, { name, email, password });
+      const res = await api.post('/auth/register', { name, email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
-      setUser(res.data.user);
+      setUser({...res.data.user, token: res.data.token});
       setIsAuthenticated(true);
       setError(null);
       return res.data;
@@ -122,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         role: 'provider'
       };
       
-      const userRes = await axios.post(`${API_URL}/auth/register`, userData);
+      const userRes = await api.post('/auth/register', userData);
       
       // Sonra provider bilgilerini kaydet
       const token = userRes.data.token;
@@ -135,14 +146,10 @@ export const AuthProvider = ({ children }) => {
         description
       };
       
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      };
+      // Token'ı ayarla
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
-      const providerRes = await axios.post(`${API_URL}/providers`, providerData, config);
+      const providerRes = await api.post('/providers', providerData);
       
       return providerRes.data;
     } catch (err) {

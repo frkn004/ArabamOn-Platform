@@ -68,6 +68,40 @@ const Login = () => {
     }
   };
 
+  // Demo kullanıcılar için giriş fonksiyonları
+  const loginAsAdmin = async () => {
+    clearError();
+    setIsSubmitting(true);
+    try {
+      await login('admin@arabamon.com', 'admin123');
+    } catch (err) {
+      console.error('Admin login error:', err);
+      setIsSubmitting(false);
+    }
+  };
+
+  const loginAsUser = async () => {
+    clearError();
+    setIsSubmitting(true);
+    try {
+      await login('user@arabamon.com', 'user123');
+    } catch (err) {
+      console.error('User login error:', err);
+      setIsSubmitting(false);
+    }
+  };
+
+  const loginAsProvider = async () => {
+    clearError();
+    setIsSubmitting(true);
+    try {
+      await login('provider@arabamon.com', 'provider123');
+    } catch (err) {
+      console.error('Provider login error:', err);
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
@@ -135,6 +169,36 @@ const Login = () => {
                   </button>
                 </div>
               </form>
+
+              {/* Demo giriş butonları */}
+              <div className="mt-4">
+                <p className="text-center mb-2">
+                  <small className="text-muted">Hızlı Giriş (Demo Hesaplar)</small>
+                </p>
+                <div className="d-flex gap-2 justify-content-center">
+                  <button
+                    onClick={loginAsAdmin}
+                    className="btn btn-sm btn-outline-danger"
+                    disabled={isSubmitting}
+                  >
+                    Admin Girişi
+                  </button>
+                  <button
+                    onClick={loginAsUser}
+                    className="btn btn-sm btn-outline-success"
+                    disabled={isSubmitting}
+                  >
+                    Kullanıcı Girişi
+                  </button>
+                  <button
+                    onClick={loginAsProvider}
+                    className="btn btn-sm btn-outline-primary"
+                    disabled={isSubmitting}
+                  >
+                    Firma Girişi
+                  </button>
+                </div>
+              </div>
 
               <div className="text-center mt-4">
                 <p className="mb-0">

@@ -18,23 +18,32 @@ const ReviewSchema = new mongoose.Schema({
   },
   appointment: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Appointment'
+    ref: 'Appointment',
+    required: true
   },
   rating: {
     type: Number,
-    required: [true, 'Değerlendirme puanı gereklidir'],
-    min: [1, 'Değerlendirme en az 1 olmalıdır'],
-    max: [5, 'Değerlendirme en fazla 5 olmalıdır']
+    required: [true, 'Lütfen bir değerlendirme puanı girin'],
+    min: 1,
+    max: 5
   },
   comment: {
     type: String,
-    required: [true, 'Yorum gereklidir'],
+    required: [true, 'Lütfen bir yorum metni girin'],
     trim: true,
-    maxlength: [500, 'Yorum 500 karakterden fazla olamaz']
+    maxlength: 500
   },
   approved: {
     type: Boolean,
     default: false
+  },
+  reply: {
+    type: String,
+    default: null
+  },
+  replyDate: {
+    type: Date,
+    default: null
   },
   createdAt: {
     type: Date,

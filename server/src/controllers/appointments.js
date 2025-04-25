@@ -122,7 +122,7 @@ exports.createAppointment = async (req, res) => {
     }
     
     // Hizmet sağlayıcı bilgilerini kontrol et
-    const provider = await ServiceProvider.findById(service.provider);
+    const provider = await ServiceProvider.findById(req.body.provider || service.provider);
     
     if (!provider) {
       return res.status(404).json({
@@ -142,16 +142,83 @@ exports.createAppointment = async (req, res) => {
       });
     }
     
+    // Seçilen saatin formatını kontrol et (HH:MM)
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(req.body.time)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Geçersiz saat formatı. Lütfen HH:MM formatında girin'
+      });
+    }
+    
+    // Tarih ve saati birleştir
+    const [hours, minutes] = req.body.time.split(':').map(Number);
+    appointmentDate.setHours(hours, minutes, 0, 0);
+    
+    // Haftanın gününü bul
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const dayOfWeek = dayNames[appointmentDate.getDay()];
+    
+    // Seçilen saatin müsait olup olmadığını kontrol et
+    const dayTimeSlots = provider.timeSlots.find(ts => ts.day === dayOfWeek);
+    
+    if (!dayTimeSlots || !dayTimeSlots.slots) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bu gün için servis sağlayıcının uygun zaman dilimleri bulunmamaktadır'
+      });
+    }
+    
+    const selectedTimeSlot = dayTimeSlots.slots.find(slot => slot.time === req.body.time);
+    
+    if (!selectedTimeSlot) {
+      return res.status(400).json({
+        success: false,
+        message: 'Seçilen saat dilimi mevcut değil'
+      });
+    }
+    
+    if (!selectedTimeSlot.available) {
+      return res.status(400).json({
+        success: false,
+        message: 'Seçilen saat dilimi dolu'
+      });
+    }
+    
+    // Aynı zaman dilimine başka randevu var mı kontrol et
+    const existingAppointment = await Appointment.findOne({
+      provider: provider._id,
+      date: {
+        $gte: new Date(appointmentDate.getTime() - 30 * 60 * 1000), // 30 dakika öncesi
+        $lte: new Date(appointmentDate.getTime() + 30 * 60 * 1000)  // 30 dakika sonrası
+      },
+      status: { $nin: ['iptal edildi'] }
+    });
+    
+    if (existingAppointment) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bu zaman diliminde başka bir randevu mevcut'
+      });
+    }
+    
     // Kullanıcı ID'sini ekle
     req.body.user = req.user.id;
     
     // Hizmet sağlayıcı ID'sini ekle
-    req.body.provider = service.provider;
+    req.body.provider = provider._id;
     
     // Toplam fiyatı ayarla
     req.body.totalPrice = service.price;
     
+    // Tarih bilgisini güncelle (saat eklenmiş hali)
+    req.body.date = appointmentDate;
+    
     const appointment = await Appointment.create(req.body);
+    
+    // Seçilen zaman dilimini dolu olarak işaretle
+    selectedTimeSlot.available = false;
+    await provider.save();
     
     // Kullanıcıya bildirim gönder
     await sendAppointmentNotification(
