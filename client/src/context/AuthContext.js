@@ -20,8 +20,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API URL - proxy yerine doğrudan URL kullanıyoruz
-  const API_URL = 'http://localhost:3001/api';
+  // API URL - dinamik olarak ayarlandı
+  const currentHost = window.location.hostname;
+  const API_PORT = 3001;
+  const API_URL = currentHost === 'localhost' || currentHost === '127.0.0.1' 
+    ? `http://${currentHost}:${API_PORT}/api` 
+    : `http://${currentHost}/api`;
+  
+  console.log("API URL:", API_URL);
 
   // Axios instance
   const api = axios.create({

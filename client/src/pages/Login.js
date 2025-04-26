@@ -73,7 +73,7 @@ const Login = () => {
     clearError();
     setIsSubmitting(true);
     try {
-      await login('admin@arabamon.com', 'admin123');
+      await login('admin@test.com', 'password');
     } catch (err) {
       console.error('Admin login error:', err);
       setIsSubmitting(false);
@@ -84,7 +84,7 @@ const Login = () => {
     clearError();
     setIsSubmitting(true);
     try {
-      await login('user@arabamon.com', 'user123');
+      await login('user1@test.com', 'password');
     } catch (err) {
       console.error('User login error:', err);
       setIsSubmitting(false);
@@ -95,7 +95,7 @@ const Login = () => {
     clearError();
     setIsSubmitting(true);
     try {
-      await login('provider@arabamon.com', 'provider123');
+      await login('provider1@test.com', 'password');
     } catch (err) {
       console.error('Provider login error:', err);
       setIsSubmitting(false);
@@ -170,29 +170,29 @@ const Login = () => {
                 </div>
               </form>
 
-              {/* Demo giriş butonları */}
-              <div className="mt-4">
-                <p className="text-center mb-2">
-                  <small className="text-muted">Hızlı Giriş (Demo Hesaplar)</small>
-                </p>
+              {/* Demo giriş butonları - daha görünür hale getirildi */}
+              <div className="mt-4 border-top pt-3">
+                <h5 className="text-center mb-3">
+                  <span className="badge bg-info text-dark">Hızlı Giriş Butonları</span>
+                </h5>
                 <div className="d-flex gap-2 justify-content-center">
                   <button
                     onClick={loginAsAdmin}
-                    className="btn btn-sm btn-outline-danger"
+                    className="btn btn-danger"
                     disabled={isSubmitting}
                   >
                     Admin Girişi
                   </button>
                   <button
                     onClick={loginAsUser}
-                    className="btn btn-sm btn-outline-success"
+                    className="btn btn-success"
                     disabled={isSubmitting}
                   >
                     Kullanıcı Girişi
                   </button>
                   <button
                     onClick={loginAsProvider}
-                    className="btn btn-sm btn-outline-primary"
+                    className="btn btn-primary"
                     disabled={isSubmitting}
                   >
                     Firma Girişi
