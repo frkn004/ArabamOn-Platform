@@ -25,7 +25,9 @@ export const AuthProvider = ({ children }) => {
   const API_PORT = 3001;
   const API_URL = currentHost === 'localhost' || currentHost === '127.0.0.1' 
     ? `http://${currentHost}:${API_PORT}/api` 
-    : `http://${currentHost}/api`;
+    : currentHost === 'arac.duftech.com.tr' 
+      ? `https://${currentHost}/api` 
+      : `http://${currentHost}/api`;
   
   console.log("API URL:", API_URL);
 
