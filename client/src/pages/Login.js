@@ -73,7 +73,7 @@ const Login = () => {
     clearError();
     setIsSubmitting(true);
     try {
-      await login('admin@test.com', 'password');
+      await login('admin@example.com', 'password');
     } catch (err) {
       console.error('Admin login error:', err);
       setIsSubmitting(false);
@@ -84,7 +84,7 @@ const Login = () => {
     clearError();
     setIsSubmitting(true);
     try {
-      await login('user1@test.com', 'password');
+      await login('user1@example.com', 'password');
     } catch (err) {
       console.error('User login error:', err);
       setIsSubmitting(false);
@@ -95,7 +95,7 @@ const Login = () => {
     clearError();
     setIsSubmitting(true);
     try {
-      await login('provider1@test.com', 'password');
+      await login('provider1@example.com', 'password');
     } catch (err) {
       console.error('Provider login error:', err);
       setIsSubmitting(false);
