@@ -2,11 +2,11 @@ db = db.getSiblingDB('arabamon');
 
 // Admin kullanıcısı
 db.users.updateOne(
-  { email: 'admin@test.com' },
+  { email: 'admin@example.com' },
   {
     $set: {
       name: 'Admin Kullanıcı',
-      email: 'admin@test.com',
+      email: 'admin@example.com',
       phone: '5551234567',
       password: '$2a$10$6Ybv8pWYT1wITHxCVMKsS.IzNhfbjK7RTVo0jFn7USwX9YKdQrtim', // 'password' olarak hashlenmiş
       role: 'admin',
@@ -18,11 +18,11 @@ db.users.updateOne(
 
 // Normal kullanıcı
 db.users.updateOne(
-  { email: 'user1@test.com' },
+  { email: 'user1@example.com' },
   {
     $set: {
       name: 'Test Kullanıcı',
-      email: 'user1@test.com',
+      email: 'user1@example.com',
       phone: '5559876543',
       password: '$2a$10$6Ybv8pWYT1wITHxCVMKsS.IzNhfbjK7RTVo0jFn7USwX9YKdQrtim', // 'password' olarak hashlenmiş
       role: 'user',
@@ -34,11 +34,11 @@ db.users.updateOne(
 
 // Servis sağlayıcı
 db.users.updateOne(
-  { email: 'provider1@test.com' },
+  { email: 'provider1@example.com' },
   {
     $set: {
       name: 'Test Servis Sağlayıcı',
-      email: 'provider1@test.com',
+      email: 'provider1@example.com',
       phone: '5551112233',
       password: '$2a$10$6Ybv8pWYT1wITHxCVMKsS.IzNhfbjK7RTVo0jFn7USwX9YKdQrtim', // 'password' olarak hashlenmiş
       role: 'provider',

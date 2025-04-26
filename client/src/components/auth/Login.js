@@ -58,16 +58,14 @@ const Login = () => {
     
     try {
       let demoEmail = "";
-      let demoPassword = "admin123";
+      let demoPassword = "password";
       
       if (role === 'admin') {
-        demoEmail = "admin@arabamon.com";
+        demoEmail = "admin@example.com";
       } else if (role === 'user') {
-        demoEmail = "user@arabamon.com";
-        demoPassword = "user123";
+        demoEmail = "user1@example.com";
       } else if (role === 'provider') {
-        demoEmail = "provider@arabamon.com";
-        demoPassword = "provider123";
+        demoEmail = "provider1@example.com";
       }
       
       console.log(`Demo giriş: ${demoEmail} / ${demoPassword}`);

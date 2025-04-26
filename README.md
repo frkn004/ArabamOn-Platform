@@ -95,15 +95,15 @@ Sistem üç ana kullanıcı rolüne sahiptir:
 Sistemi test etmek için aşağıdaki demo hesaplarını kullanabilirsiniz:
 
 - **Admin:**
-  - Email: admin@test.com
+  - Email: admin@example.com
   - Şifre: password
 
 - **Kullanıcı (Araç Sahibi):**
-  - Email: user1@test.com
+  - Email: user1@example.com
   - Şifre: password
 
 - **Servis Sağlayıcı (Firma):**
-  - Email: provider1@test.com
+  - Email: provider1@example.com
   - Şifre: password
 
 ## Lisans
